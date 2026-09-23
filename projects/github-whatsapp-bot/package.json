@@ -1,0 +1,26 @@
+{
+  "name": "create-github-whatsapp-notifier",
+  "version": "1.0.6",
+  "description": "Scaffold a GitHub webhook to WhatsApp notifier bot",
+  "type": "module",
+  "bin": {
+    "create-github-whatsapp-notifier": "./bin/create-github-whatsapp-notifier.js"
+  },
+  "files": [
+    "bin",
+    "template",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "echo \"No tests configured\""
+  },
+  "keywords": [
+    "create",
+    "scaffold",
+    "github",
+    "whatsapp",
+    "twilio"
+  ],
+  "author": "Rahul Kumar (github.com/imRahul05)",
+  "license": "MIT"
+}

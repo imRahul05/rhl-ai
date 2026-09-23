@@ -1,0 +1,23 @@
+{
+  "name": "__PROJECT_NAME__",
+  "version": "1.0.0",
+  "description": "GitHub webhook to WhatsApp notifier bot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "github",
+    "webhook",
+    "whatsapp",
+    "twilio"
+  ],
+  "author": "Rahul Kumar (github.com/imRahul05)",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^4.22.1",
+    "twilio": "^5.12.2"
+  }
+}
