@@ -1,0 +1,38 @@
+{
+  "name": "@rhl-ai/skill-frontend-performance-engineer",
+  "version": "1.0.0",
+  "description": "Evidence-led frontend performance engineering skill for AI coding agents",
+  "type": "module",
+  "main": "./SKILL.md",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "decision-framework",
+    "knowledge",
+    "patterns",
+    "examples",
+    "references",
+    "scripts",
+    "evaluation.md"
+  ],
+  "scripts": {
+    "validate": "bash ./scripts/validate.sh",
+    "pack": "npm pack"
+  },
+  "keywords": [
+    "rhl-ai",
+    "ai-skill",
+    "agent-skill",
+    "web-performance",
+    "core-web-vitals",
+    "react",
+    "nextjs"
+  ],
+  "author": "Rahul Kumar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imRahul05/rhl-ai.git",
+    "directory": "skills/frontend-performance-engineer"
+  }
+}
