@@ -4,7 +4,8 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { TerminalDemo } from '@/components/terminal-demo';
-import { ArrowRight, Github, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
+import { siGithub } from 'simple-icons';
 
 export default function RhlCliPage(): React.JSX.Element {
   return (
@@ -50,7 +51,7 @@ export default function RhlCliPage(): React.JSX.Element {
                 rel="noopener noreferrer"
               >
                 <Button variant="outline" size="lg" className="gap-2">
-                  <Github className="w-4 h-4" />
+                  <svg role="img" viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-label={siGithub.title}><path d={siGithub.path} /></svg>
                   View Source on GitHub
                 </Button>
               </Link>

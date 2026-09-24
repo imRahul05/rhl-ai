@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Github, ExternalLink } from 'lucide-react';
+import { ChevronRight, ExternalLink } from 'lucide-react';
+import { siGithub } from 'simple-icons';
 
 export default function AboutPage(): React.JSX.Element {
   return (
@@ -79,7 +80,7 @@ export default function AboutPage(): React.JSX.Element {
                   rel="noopener noreferrer"
                 >
                   <Button variant="outline" size="sm" className="gap-2">
-                    <Github className="w-4 h-4" />
+                    <svg role="img" viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-label={siGithub.title}><path d={siGithub.path} /></svg>
                     <span>GitHub Repository</span>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60" />
                   </Button>

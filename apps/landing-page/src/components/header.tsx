@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useTheme } from '@/components/theme-provider';
+import { siGithub } from 'simple-icons';
 import {
-  Github,
   Sun,
   Moon,
   Menu,
@@ -70,11 +70,10 @@ export function Header(): React.JSX.Element {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
-                    isActive
-                      ? 'text-foreground font-medium bg-muted'
-                      : 'hover:text-foreground hover:bg-muted/60'
-                  }`}
+                  className={`px-3 py-1.5 rounded-md transition-colors ${isActive
+                    ? 'text-foreground font-medium bg-muted'
+                    : 'hover:text-foreground hover:bg-muted/60'
+                    }`}
                 >
                   {item.label}
                 </Link>
@@ -112,7 +111,14 @@ export function Header(): React.JSX.Element {
               size="sm"
               className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
             >
-              <Github className="w-3.5 h-3.5" />
+              <svg
+                role="img"
+                viewBox="0 0 24 24"
+                className="h-5 w-5 fill-current"
+                aria-label="GitHub"
+              >
+                <path d={siGithub.path} />
+              </svg>
               <span>GitHub</span>
             </Button>
           </Link>
@@ -155,11 +161,10 @@ export function Header(): React.JSX.Element {
                 key={item.href}
                 href={item.href}
                 onClick={closeMobileMenu}
-                className={`block px-3 py-2 text-sm rounded-md transition-colors ${
-                  isActive
-                    ? 'text-foreground font-medium bg-muted'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
-                }`}
+                className={`block px-3 py-2 text-sm rounded-md transition-colors ${isActive
+                  ? 'text-foreground font-medium bg-muted'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                  }`}
               >
                 {item.label}
               </Link>
@@ -173,7 +178,14 @@ export function Header(): React.JSX.Element {
               onClick={closeMobileMenu}
             >
               <Button variant="outline" size="sm" className="w-full justify-center gap-2">
-                <Github className="w-4 h-4" />
+                <svg
+                  role="img"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5 fill-current"
+                  aria-label="GitHub"
+                >
+                  <path d={siGithub.path} />
+                </svg>
                 View on GitHub
                 <ExternalLink className="w-3.5 h-3.5 opacity-60" />
               </Button>
