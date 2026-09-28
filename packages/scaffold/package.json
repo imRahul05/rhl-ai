@@ -1,7 +1,13 @@
 {
   "name": "@rhl-ai/scaffold",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imRahul05/rhl-ai.git",
+    "directory": "packages/scaffold"
   },
   "version": "0.1.0",
   "description": "Project template scaffolding engine for RHL AI templates",

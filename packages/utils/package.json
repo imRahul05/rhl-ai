@@ -1,7 +1,13 @@
 {
   "name": "@rhl-ai/utils",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imRahul05/rhl-ai.git",
+    "directory": "packages/utils"
   },
   "version": "0.1.0",
   "description": "Shared utility functions for RHL AI tools and packages",

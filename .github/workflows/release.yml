@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      id-token: write
+      packages: write
 
     steps:
       - name: Checkout Code
@@ -34,11 +34,8 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
-
-      - name: Ensure npm CLI supports Trusted Publishing
-        run: npm install -g npm@11.5.1
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@rhl-ai'
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -56,4 +53,4 @@ jobs:
           commit: 'chore: version and publish packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_PROVENANCE: 'true'
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
