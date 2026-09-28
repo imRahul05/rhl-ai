@@ -1,5 +1,8 @@
 {
   "name": "@rhl-ai/utils",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.1.0",
   "description": "Shared utility functions for RHL AI tools and packages",
   "type": "module",

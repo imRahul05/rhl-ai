@@ -1,5 +1,8 @@
 {
   "name": "@rhl-ai/skills",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.1.0",
   "description": "Discovery, validation, scaffolding, and installation engine for AI agent skills",
   "type": "module",

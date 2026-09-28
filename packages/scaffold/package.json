@@ -1,5 +1,8 @@
 {
   "name": "@rhl-ai/scaffold",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.1.0",
   "description": "Project template scaffolding engine for RHL AI templates",
   "type": "module",
