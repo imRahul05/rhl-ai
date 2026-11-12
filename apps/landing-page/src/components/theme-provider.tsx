@@ -35,6 +35,8 @@ export function ThemeProvider({
     try {
       const storedTheme = window.localStorage.getItem('rhl-theme') as Theme | null;
       if (storedTheme === 'dark' || storedTheme === 'light') {
+        // Reading localStorage must wait until after hydration to avoid a mismatch.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setThemeState(storedTheme);
         applyTheme(storedTheme);
       } else {

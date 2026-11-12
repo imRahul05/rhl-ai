@@ -80,6 +80,8 @@ export function SmoothScrollProvider({
       autoResize: true,
     });
 
+    // Lenis is an external browser-only system; publish the instance once created.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenisInstance(lenis);
 
     let animationFrameId: number;
