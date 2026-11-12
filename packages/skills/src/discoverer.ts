@@ -1,8 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { pathExists, findMonorepoRoot } from '@rhl-ai/utils';
 import { Skill, SkillFiles } from './types.js';
 import { parseSkillMarkdown } from './parser.js';
+
+/** Location of the skills bundled with the published package (<pkg>/assets/skills). */
+export function getBundledSkillsDirectory(): string {
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'skills');
+}
 
 export async function resolveSkillsDirectory(customDir?: string): Promise<string | null> {
   if (customDir) {
@@ -21,6 +27,11 @@ export async function resolveSkillsDirectory(customDir?: string): Promise<string
   const cwdSkillsPath = path.resolve('skills');
   if (await pathExists(cwdSkillsPath)) {
     return cwdSkillsPath;
+  }
+
+  const bundledPath = getBundledSkillsDirectory();
+  if (await pathExists(bundledPath)) {
+    return bundledPath;
   }
 
   return null;

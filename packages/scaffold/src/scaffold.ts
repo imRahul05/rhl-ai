@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ensureDir, pathExists, findMonorepoRoot } from '@rhl-ai/utils';
 import { ScaffoldOptions, ScaffoldResult, TemplateInfo } from './types.js';
 
@@ -20,6 +21,17 @@ export async function resolveTemplatesDirectory(customDir?: string): Promise<str
   const cwdTemplatesPath = path.resolve('templates');
   if (await pathExists(cwdTemplatesPath)) {
     return cwdTemplatesPath;
+  }
+
+  // Bundled with the published package: <pkg>/assets/templates (dist/ is a sibling of assets/).
+  const bundledPath = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+    'assets',
+    'templates',
+  );
+  if (await pathExists(bundledPath)) {
+    return bundledPath;
   }
 
   return null;
@@ -81,9 +93,11 @@ async function copyAndInterpolate(
       if (child === 'node_modules' || child === '.turbo' || child === 'dist') {
         continue;
       }
+      // Bundled templates ship `gitignore` because npm strips `.gitignore` from tarballs.
+      const targetName = child === 'gitignore' ? '.gitignore' : child;
       await copyAndInterpolate(
         path.join(sourcePath, child),
-        path.join(targetPath, child),
+        path.join(targetPath, targetName),
         replacements,
       );
     }
