@@ -112,3 +112,9 @@ export function getAllSkills(): SkillEntry[] {
 export function getSkill(slug: string): SkillEntry | undefined {
   return getAllSkills().find((s) => s.slug === slug);
 }
+
+/** Raw SKILL.md text for a skill, or an empty string when it does not exist. */
+export function getSkillSource(slug: string): string {
+  const file = path.join(resolveSkillsRoot(), slug, 'SKILL.md');
+  return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+}

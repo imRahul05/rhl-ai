@@ -1,9 +1,8 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Reveal } from '@/components/motion/reveal';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { getAllSkills } from '@/lib/skills';
 
@@ -11,10 +10,9 @@ export default function SkillsCatalogPage(): React.JSX.Element {
   const skills = getAllSkills();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
-      <Header />
+    <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         {/* Header Section */}
         <section className="py-16 md:py-20 border-b border-border">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -40,7 +38,7 @@ export default function SkillsCatalogPage(): React.JSX.Element {
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="divide-y divide-border">
               {skills.map((skill) => (
-                <div
+                <Reveal
                   key={skill.slug}
                   className="py-12 first:pt-0 last:pb-0 grid grid-cols-1 md:grid-cols-12 gap-6 items-start"
                 >
@@ -95,7 +93,7 @@ export default function SkillsCatalogPage(): React.JSX.Element {
                       </Button>
                     </Link>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
 
@@ -120,8 +118,6 @@ export default function SkillsCatalogPage(): React.JSX.Element {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }

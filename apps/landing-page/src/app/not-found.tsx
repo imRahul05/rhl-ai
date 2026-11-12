@@ -1,24 +1,26 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function NotFound(): React.JSX.Element {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#07090e] text-white px-4 text-center">
-      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6">
-        <Sparkles className="w-6 h-6" />
+    <main id="main" className="flex flex-1 flex-col items-start justify-center px-4 py-32 sm:px-6">
+      <div className="mx-auto w-full max-w-7xl">
+        <p className="label">
+          <span className="text-primary">404</span> — Not found
+        </p>
+        <h1 className="display-xl mt-6">No such file or directory.</h1>
+        <p className="mt-6 font-mono text-sm text-muted-foreground">
+          <span className="text-primary">❯</span> cd /
+        </p>
+        <Link
+          href="/"
+          className="mt-8 inline-flex h-11 items-center gap-2 rounded-md bg-foreground px-5 text-sm font-medium text-background transition-colors hover:bg-foreground/85"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Back to home
+        </Link>
       </div>
-      <h1 className="text-4xl font-extrabold tracking-tight mb-3">404 — Page Not Found</h1>
-      <p className="text-slate-400 text-sm max-w-md mb-8">
-        The requested resource in the RHL AI ecosystem could not be located.
-      </p>
-      <Link href="/">
-        <Button className="bg-indigo-600 hover:bg-indigo-500 text-white">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Homepage
-        </Button>
-      </Link>
-    </div>
+    </main>
   );
 }
