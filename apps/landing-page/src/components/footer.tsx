@@ -1,182 +1,119 @@
-'use client';
-
 import * as React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 
+interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+interface FooterColumn {
+  title: string;
+  links: FooterLink[];
+}
+
+const COLUMNS: FooterColumn[] = [
+  {
+    title: 'Products',
+    links: [
+      { label: 'RHL CLI', href: '/products/rhl-cli' },
+      { label: 'Skills System', href: '/products/skills' },
+      { label: 'WhatsApp Bot', href: '/products/whatsapp-bot' },
+      { label: 'All products', href: '/products' },
+    ],
+  },
+  {
+    title: 'Ecosystem',
+    links: [
+      { label: 'Skills Catalog', href: '/skills' },
+      { label: 'Code Reviewer', href: '/skills/code-reviewer' },
+      { label: 'Frontend Performance', href: '/skills/frontend-performance-engineer' },
+      { label: 'Directives', href: '/directives' },
+      { label: 'Architecture', href: '/architecture' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Quickstart Guide', href: '/quickstart' },
+      { label: 'About RHL AI', href: '/about' },
+      { label: 'GitHub Repository', href: 'https://github.com/imRahul05/rhl-ai', external: true },
+      {
+        label: 'npm: whatsapp-notifier',
+        href: 'https://www.npmjs.com/package/create-github-whatsapp-notifier',
+        external: true,
+      },
+    ],
+  },
+];
+
 export function Footer(): React.JSX.Element {
-  const currentYear = React.useMemo(() => new Date().getFullYear(), []);
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-background py-14 text-sm text-muted-foreground transition-colors">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-12">
-          {/* Brand Col */}
-          <div className="col-span-2 md:col-span-1">
-            <Link
-              href="/"
-              className="font-semibold text-foreground tracking-tight text-base block mb-2"
-            >
+    <footer className="relative overflow-hidden border-t border-border bg-background text-sm text-muted-foreground">
+      <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 pb-14 md:grid-cols-12">
+          <div className="col-span-2 md:col-span-5">
+            <Link href="/" className="text-base font-semibold tracking-tight text-foreground">
               RHL AI
             </Link>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
-              Engineering infrastructure for AI-assisted development. Reusable agent skills, developer tooling, and production workflows.
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
+              Agent skills, a CLI and automation that are designed to work together. Open source,
+              MIT licensed.
             </p>
           </div>
 
-          {/* Products */}
-          <div>
-            <h4 className="text-xs font-mono uppercase tracking-wider text-foreground mb-3 font-semibold">
-              Products
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link
-                  href="/products/rhl-cli"
-                  className="hover:text-foreground transition-colors"
-                >
-                  RHL CLI
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products/skills"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Skills System
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products/whatsapp-bot"
-                  className="hover:text-foreground transition-colors"
-                >
-                  WhatsApp Bot
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products"
-                  className="hover:text-foreground transition-colors font-medium text-foreground"
-                >
-                  All Products →
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Intelligence */}
-          <div>
-            <h4 className="text-xs font-mono uppercase tracking-wider text-foreground mb-3 font-semibold">
-              Ecosystem
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link
-                  href="/skills"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Skills Catalog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/skills/code-reviewer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Code Reviewer
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/skills/frontend-performance-engineer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Frontend Performance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/directives"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Directives
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/architecture"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Architecture
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h4 className="text-xs font-mono uppercase tracking-wider text-foreground mb-3 font-semibold">
-              Resources
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link
-                  href="/quickstart"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Quickstart Guide
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="hover:text-foreground transition-colors"
-                >
-                  About RHL AI
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://github.com/imRahul05/rhl-ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors inline-flex items-center gap-1 group"
-                >
-                  <span>GitHub Repository</span>
-                  <ArrowUpRight className="w-3 h-3 opacity-60 group-hover:opacity-100" />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://www.npmjs.com/package/create-github-whatsapp-notifier"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors inline-flex items-center gap-1 group"
-                >
-                  <span>npm: whatsapp-notifier</span>
-                  <ArrowUpRight className="w-3 h-3 opacity-60 group-hover:opacity-100" />
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {COLUMNS.map((column) => (
+            <nav
+              key={column.title}
+              aria-label={column.title}
+              className="md:col-span-2 md:last:col-span-3"
+            >
+              <h2 className="label">{column.title}</h2>
+              <ul className="mt-4 space-y-2.5 text-[13px]">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="link-line inline-flex items-center gap-1 pb-0.5 text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {link.label}
+                      {link.external ? (
+                        <ArrowUpRight className="size-3 opacity-60" aria-hidden="true" />
+                      ) : null}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-3">
-          <p>© {currentYear} RHL AI. MIT Permissive License.</p>
-          <p className="font-mono text-[11px]">
+        <div className="flex flex-col items-start justify-between gap-2 border-t border-border py-5 font-mono text-[11px] sm:flex-row sm:items-center">
+          <p>© {currentYear} RHL AI. MIT License.</p>
+          <p>
             Maintained by{' '}
             <Link
               href="https://github.com/imRahul05"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground hover:underline"
+              className="link-line pb-0.5 text-foreground"
             >
               Rahul Kumar (@imRahul05)
             </Link>
           </p>
         </div>
+      </div>
+
+      {/* Wordmark, cropped by the page edge. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none pb-[0.1em] whitespace-nowrap text-center font-pixel text-[clamp(4.5rem,24vw,22rem)] leading-[0.82] tracking-[-0.02em] text-foreground/[0.07]"
+      >
+        rhl<span className="text-primary">_</span>ai
       </div>
     </footer>
   );
