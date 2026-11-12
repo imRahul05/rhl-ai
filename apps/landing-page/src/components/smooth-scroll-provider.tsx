@@ -61,14 +61,15 @@ export function SmoothScrollProvider({
 
     document.documentElement.classList.add('lenis', 'lenis-smooth');
 
+    // Wheel and touch scrolling stay native. Smoothing the wheel (the previous
+    // `smoothWheel: true, duration: 1.05`) made the page lag behind fast scrolls
+    // and keep gliding for ~1s after the user stopped, which reads as "floaty".
+    // Lenis is kept only for programmatic scrolls (anchor links, scrollTo).
     const lenis = new Lenis({
-      duration: 1.05,
-      easing: easeOutExpo,
       orientation: 'vertical',
       gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
+      smoothWheel: false,
+      syncTouch: false,
       autoResize: true,
     });
 
