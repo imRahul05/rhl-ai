@@ -1,18 +1,15 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
-import { TerminalDemo } from '@/components/terminal-demo';
+import { HeroTerminal } from '@/components/home/hero-terminal';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { siGithub } from 'simple-icons';
 
 export default function RhlCliPage(): React.JSX.Element {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
-      <Header />
+    <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         {/* Breadcrumb & Hero */}
         <section className="py-16 md:py-24 border-b border-border">
           <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -65,7 +62,7 @@ export default function RhlCliPage(): React.JSX.Element {
             <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-4">
               DEMONSTRATION
             </p>
-            <TerminalDemo />
+            <HeroTerminal />
           </div>
         </section>
 
@@ -231,8 +228,6 @@ export default function RhlCliPage(): React.JSX.Element {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }
