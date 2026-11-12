@@ -89,7 +89,7 @@ export function Footer(): React.JSX.Element {
               </li>
               <li>
                 <Link
-                  href="/skills/frontend-performance"
+                  href="/skills/frontend-performance-engineer"
                   className="hover:text-foreground transition-colors"
                 >
                   Frontend Performance

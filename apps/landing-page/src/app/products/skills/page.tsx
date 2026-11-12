@@ -187,7 +187,7 @@ export default function SkillsProductPage(): React.JSX.Element {
                     Evidence-led web performance diagnostics for Core Web Vitals (LCP, INP, CLS) and bundle optimization.
                   </p>
                 </div>
-                <Link href="/skills/frontend-performance">
+                <Link href="/skills/frontend-performance-engineer">
                   <Button variant="outline" size="sm" className="gap-1.5">
                     View Skill Page
                     <ArrowRight className="w-3.5 h-3.5" />
