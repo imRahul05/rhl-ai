@@ -1,8 +1,7 @@
 {
   "name": "@rhl-ai/scaffold",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -23,10 +22,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "assets"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "node ../../scripts/copy-assets.mjs ../../templates assets/templates && tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/ --max-warnings=0",
     "typecheck": "tsc --noEmit",

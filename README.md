@@ -203,7 +203,25 @@ pnpm version-packages
 pnpm release
 ```
 
-Package releases run through `.github/workflows/release.yml` and require `NPM_TOKEN` secret to be set in repository settings.
+---
+
+## Releasing
+
+Publishing to the public npm registry (`registry.npmjs.org`) is automatic and driven by `.github/workflows/release.yml`:
+
+1. On every push to `main`, the `validate` job runs build, lint, typecheck and test. The `release` job only runs if it passes.
+2. `scripts/auto-changeset.mjs` finds publishable workspace packages (`packages/*`, `skills/*`, `projects/*`; anything not `private`) whose files changed since the previous push, and writes a `patch` changeset (`.changeset/auto-<sha>-<pkg>.md`) for each, using commit subjects as the summary. Changes to only `CHANGELOG.md` or `package.json` version lines are ignored, packages with a pending changeset are skipped, and the release commit itself never triggers it. The workflow commits these files to `main`.
+3. `changesets/action` opens or updates a **Version Packages** PR (bumps versions, updates changelogs and dependents). Merging it publishes only the packages whose version is not yet on npm, with provenance.
+
+Need a `minor` or `major` bump? Run `pnpm changeset` in your PR and select the bump; an existing changeset for a package stops the automatic patch one. Preview the automatic step locally with `node scripts/auto-changeset.mjs --base <sha> --dry-run`.
+
+### One-time setup
+
+- Create the `@rhl-ai` organization on npmjs.com (unscoped `create-github-whatsapp-notifier` needs no org).
+- For each package, on npmjs.com go to Settings, Trusted Publisher, and add GitHub Actions with repository `imRahul05/rhl-ai` and workflow `release.yml`.
+- Alternative or fallback: add an npm automation token as the `NPM_TOKEN` repository secret.
+- Trusted publishers are configured per existing package, so the **first publish of a brand-new package** needs `NPM_TOKEN`; configure its Trusted Publisher afterwards.
+- If `main` is branch-protected, allow GitHub Actions to push (for the automatic changeset commit) and to create PRs.
 
 ---
 
