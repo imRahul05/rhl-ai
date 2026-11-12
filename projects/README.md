@@ -4,7 +4,7 @@ This directory is designated for experimental applications, proofs of concept (P
 
 ## Projects
 
-### [`github-whatsapp-bot`](file:///projects/github-whatsapp-bot)
+### [`github-whatsapp-bot`](./github-whatsapp-bot)
 
 A CLI tool and webhook service (`create-github-whatsapp-notifier`) that listens for GitHub webhook events (pull requests, issues, assignments, reviews) and sends formatted WhatsApp notifications via Twilio.
 
