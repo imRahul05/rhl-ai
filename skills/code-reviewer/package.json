@@ -1,0 +1,33 @@
+{
+  "name": "@rhl-ai/skill-code-reviewer",
+  "version": "1.0.0",
+  "description": "Expert AI code reviewer skill for strict TypeScript, architecture, and performance",
+  "type": "module",
+  "main": "./SKILL.md",
+  "files": [
+    "SKILL.md",
+    "examples",
+    "references",
+    "scripts"
+  ],
+  "scripts": {
+    "validate": "bash ./scripts/validate.sh"
+  },
+  "keywords": [
+    "rhl-ai",
+    "ai-skill",
+    "agent-skill",
+    "code-review",
+    "typescript"
+  ],
+  "author": "Rahul Kumar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imRahul05/rhl-ai.git",
+    "directory": "skills/code-reviewer"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -8,15 +8,50 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  validate:
+    name: Build, Lint, Typecheck & Test
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'imRahul05'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
   release:
     name: Release Packages
+    needs: validate
     runs-on: ubuntu-latest
     if: github.repository_owner == 'imRahul05'
 
     permissions:
       contents: write
       pull-requests: write
-      packages: write
+      id-token: write # npm trusted publishing (OIDC) + provenance
 
     steps:
       - name: Checkout Code
@@ -30,18 +65,35 @@ jobs:
           version: 10.26.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'pnpm'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@rhl-ai'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Trusted publishing requires npm >= 11.5.1
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Packages
-        run: pnpm build
+      - name: Generate automatic changesets
+        run: node scripts/auto-changeset.mjs
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+
+      # Persist generated changesets on main so every push accumulates into the
+      # "Version Packages" PR (pushes made with GITHUB_TOKEN do not retrigger workflows).
+      - name: Commit automatic changesets
+        run: |
+          if [ -n "$(git status --porcelain .changeset)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .changeset
+            git commit -m "chore(changeset): add automatic changesets [skip ci]"
+            git push origin HEAD:main
+          fi
 
       - name: Create Release PR or Publish
         id: changesets
@@ -53,4 +105,6 @@ jobs:
           commit: 'chore: version and publish packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          # Optional fallback when Trusted Publishing is not configured (e.g. first publish).
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

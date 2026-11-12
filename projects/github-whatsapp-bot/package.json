@@ -22,5 +22,13 @@
     "twilio"
   ],
   "author": "Rahul Kumar (github.com/imRahul05)",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imRahul05/rhl-ai.git",
+    "directory": "projects/github-whatsapp-bot"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
