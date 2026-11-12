@@ -23,10 +23,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "assets"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "node ../../scripts/copy-assets.mjs ../../skills assets/skills && tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/ --max-warnings=0",
     "typecheck": "tsc --noEmit",

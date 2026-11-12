@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { ensureDir, pathExists } from '@rhl-ai/utils';
 import { CreateSkillOptions } from './types.js';
-import { resolveSkillsDirectory } from './discoverer.js';
+import { getBundledSkillsDirectory, resolveSkillsDirectory } from './discoverer.js';
 
 export async function createSkill(
   skillName: string,
@@ -19,7 +19,11 @@ export async function createSkill(
   let targetBaseDir = options.skillsDir;
   if (!targetBaseDir) {
     const discoveredDir = await resolveSkillsDirectory();
-    targetBaseDir = discoveredDir ?? path.resolve('skills');
+    // Never write new skills into the read-only bundled assets of an installed package.
+    targetBaseDir =
+      discoveredDir && discoveredDir !== getBundledSkillsDirectory()
+        ? discoveredDir
+        : path.resolve('skills');
   }
 
   const skillPath = path.join(targetBaseDir, sanitizedName);

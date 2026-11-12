@@ -1,3 +1,5 @@
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { configureLogger } from '@rhl-ai/utils';
 import { registerSkillCommands } from './commands/skill.js';
@@ -31,7 +33,20 @@ export function runCli(argv: readonly string[] = process.argv): void {
   program.parse(argv as string[]);
 }
 
+function isMainModule(): boolean {
+  const entry = process.argv[1];
+  if (!entry) {
+    return false;
+  }
+  try {
+    // Resolve symlinks: package managers expose bins (node_modules/.bin/rhl) as symlinks.
+    return realpathSync(entry) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
 // Automatically run when executed as binary
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMainModule()) {
   runCli();
 }
