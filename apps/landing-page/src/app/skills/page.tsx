@@ -5,47 +5,11 @@ import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, ChevronRight } from 'lucide-react';
-
-interface CatalogSkill {
-  id: string;
-  name: string;
-  version: string;
-  category: string;
-  tags: string[];
-  summary: string;
-  description: string;
-  installCommand: string;
-  href: string;
-}
-
-const SKILLS_CATALOG: CatalogSkill[] = [
-  {
-    id: 'code-reviewer',
-    name: 'Code Reviewer',
-    version: '1.0.0',
-    category: 'CODE QUALITY & SECURITY',
-    tags: ['TypeScript', 'Architecture', 'Security', 'Strictness'],
-    summary: 'Expert AI code review for modern TypeScript applications using structured heuristics.',
-    description:
-      'Guides agents through rigorous, multi-dimensional code reviews across TypeScript applications. Evaluates diffs across 5 core axes (Correctness, Type Safety, Architecture, Security, Performance) and categorizes findings into 3 strict severity tiers.',
-    installCommand: 'pnpm rhl skill install code-reviewer',
-    href: '/skills/code-reviewer',
-  },
-  {
-    id: 'frontend-performance',
-    name: 'Frontend Performance Engineer',
-    version: '1.0.0',
-    category: 'WEB PERFORMANCE & CWV',
-    tags: ['Core Web Vitals', 'LCP', 'INP', 'React', 'Next.js'],
-    summary: 'Evidence-driven frontend performance engineering and diagnostic analysis.',
-    description:
-      'Enforces an evidence-first operating loop (Frame → Measure → Localize → Candidate Patterns → Check Fit → Implement → Verify → Guard). Diagnoses slow LCP, poor INP, bundle bloat, and rendering waterfalls before recommending targeted optimizations.',
-    installCommand: 'pnpm rhl skill install frontend-performance-engineer',
-    href: '/skills/frontend-performance',
-  },
-];
+import { getAllSkills } from '@/lib/skills';
 
 export default function SkillsCatalogPage(): React.JSX.Element {
+  const skills = getAllSkills();
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
       <Header />
@@ -75,28 +39,27 @@ export default function SkillsCatalogPage(): React.JSX.Element {
         <section className="py-16">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="divide-y divide-border">
-              {SKILLS_CATALOG.map((skill) => (
+              {skills.map((skill) => (
                 <div
-                  key={skill.id}
+                  key={skill.slug}
                   className="py-12 first:pt-0 last:pb-0 grid grid-cols-1 md:grid-cols-12 gap-6 items-start"
                 >
                   {/* Left Column: Metadata */}
                   <div className="md:col-span-4 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                        {skill.category}
-                      </span>
-                      <Badge variant="outline" size="sm" className="font-mono text-[11px]">
-                        v{skill.version}
-                      </Badge>
-                    </div>
+                    {skill.metadata.version ? (
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" size="sm" className="font-mono text-[11px]">
+                          v{skill.metadata.version}
+                        </Badge>
+                      </div>
+                    ) : null}
 
                     <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                      {skill.name}
+                      {skill.title}
                     </h2>
 
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      {skill.tags.map((tag) => (
+                      {(skill.metadata.tags ?? []).map((tag) => (
                         <span
                           key={tag}
                           className="text-[11px] font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded"
@@ -112,18 +75,20 @@ export default function SkillsCatalogPage(): React.JSX.Element {
                     <p className="text-sm font-medium text-foreground">
                       {skill.summary}
                     </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                      {skill.description}
-                    </p>
+                    {skill.metadata.description !== skill.summary ? (
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                        {skill.metadata.description}
+                      </p>
+                    ) : null}
                     <div className="pt-2 font-mono text-xs text-muted-foreground">
                       <span className="text-primary mr-2">$</span>
-                      {skill.installCommand}
+                      pnpm rhl skill install {skill.slug}
                     </div>
                   </div>
 
                   {/* Right Column: CTA */}
                   <div className="md:col-span-2 flex md:justify-end pt-1">
-                    <Link href={skill.href}>
+                    <Link href={`/skills/${skill.slug}`}>
                       <Button variant="outline" size="sm" className="gap-1.5">
                         <span>View skill</span>
                         <ArrowRight className="w-3.5 h-3.5" />
