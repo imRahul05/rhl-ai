@@ -8,7 +8,6 @@ import { siGithub } from 'simple-icons';
 export default function RhlCliPage(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
-
       <main id="main" className="flex-1">
         {/* Breadcrumb & Hero */}
         <section className="py-16 md:py-24 border-b border-border">
@@ -48,7 +47,14 @@ export default function RhlCliPage(): React.JSX.Element {
                 rel="noopener noreferrer"
               >
                 <Button variant="outline" size="lg" className="gap-2">
-                  <svg role="img" viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-label={siGithub.title}><path d={siGithub.path} /></svg>
+                  <svg
+                    role="img"
+                    viewBox="0 0 24 24"
+                    className="w-4 h-4 fill-current"
+                    aria-label={siGithub.title}
+                  >
+                    <path d={siGithub.path} />
+                  </svg>
                   View Source on GitHub
                 </Button>
               </Link>
@@ -77,10 +83,14 @@ export default function RhlCliPage(): React.JSX.Element {
             </h2>
             <div className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl space-y-3">
               <p>
-                Agentic workflows are frequently fragmented across disparate scripts, undocumented system prompts, and manual folder copies.
+                Agentic workflows are frequently fragmented across disparate scripts, undocumented
+                system prompts, and manual folder copies.
               </p>
               <p>
-                <strong className="text-foreground">RHL CLI</strong> unifies agent tooling under a single executable. It automates the discovery, validation, and installation of verified coding agent skills while managing project bootstrapping and environment configurations with zero ambiguity.
+                <strong className="text-foreground">RHL CLI</strong> unifies agent tooling under a
+                single executable. It automates the discovery, validation, and installation of
+                verified coding agent skills while managing project bootstrapping and environment
+                configurations with zero ambiguity.
               </p>
             </div>
           </div>
@@ -108,18 +118,28 @@ export default function RhlCliPage(): React.JSX.Element {
               </div>
 
               <div className="space-y-2 border-t border-border pt-4">
-                <span className="text-xs font-mono text-primary font-semibold">02 / VERIFICATION</span>
+                <span className="text-xs font-mono text-primary font-semibold">
+                  02 / VERIFICATION
+                </span>
                 <h3 className="font-semibold text-foreground text-base">Validate Heuristics</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Checks that review rules, decision loops, and negative constraints adhere to strict formats.
+                  Checks that review rules, decision loops, and negative constraints adhere to
+                  strict formats.
                 </p>
               </div>
 
               <div className="space-y-2 border-t border-border pt-4">
-                <span className="text-xs font-mono text-primary font-semibold">03 / INSTALLATION</span>
+                <span className="text-xs font-mono text-primary font-semibold">
+                  03 / INSTALLATION
+                </span>
                 <h3 className="font-semibold text-foreground text-base">Mount to Assistant</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Installs skill definitions into <code className="text-foreground font-mono text-[11px]">~/.agents/skills/</code> for autonomous AI coding agents.
+                  Installs skills into{' '}
+                  <code className="text-foreground font-mono text-[11px]">~/.claude/skills/</code>{' '}
+                  with <code className="text-foreground font-mono text-[11px]">--target</code>{' '}
+                  (Claude Code) or{' '}
+                  <code className="text-foreground font-mono text-[11px]">~/.agents/skills/</code>{' '}
+                  by default.
                 </p>
               </div>
             </div>
@@ -136,6 +156,13 @@ export default function RhlCliPage(): React.JSX.Element {
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                 Core commands
               </h2>
+              <p className="text-sm text-muted-foreground mt-3">
+                Run any command without installing:{' '}
+                <code className="font-mono text-foreground">npx @rhl-ai/cli &lt;command&gt;</code>.
+                Or install once with{' '}
+                <code className="font-mono text-foreground">npm install -g @rhl-ai/cli</code> and
+                use <code className="font-mono text-foreground">rhl</code>.
+              </p>
             </div>
 
             <div className="divide-y divide-border border-y border-border">
@@ -144,7 +171,8 @@ export default function RhlCliPage(): React.JSX.Element {
                   rhl skill list
                 </code>
                 <div className="md:col-span-2 text-xs text-muted-foreground">
-                  Scans and lists all verified agent skills installed or available in the monorepo catalog.
+                  Lists every skill bundled with the CLI (or in your repo’s skills/ folder), with
+                  version and files.
                 </div>
               </div>
 
@@ -153,7 +181,39 @@ export default function RhlCliPage(): React.JSX.Element {
                   rhl skill install &lt;name&gt;
                 </code>
                 <div className="md:col-span-2 text-xs text-muted-foreground">
-                  Installs a skill into your coding agent workspace directory (<code className="font-mono text-foreground">~/.agents/skills/</code>).
+                  Installs a skill into an agent’s skills folder. Default{' '}
+                  <code className="font-mono text-foreground">~/.agents/skills/</code>; add{' '}
+                  <code className="font-mono text-foreground">--target ~/.claude/skills</code> for
+                  Claude Code, then call it with{' '}
+                  <code className="font-mono text-foreground">/&lt;name&gt;</code>.
+                </div>
+              </div>
+
+              <div className="py-4 grid grid-cols-1 md:grid-cols-3 gap-2 items-baseline">
+                <code className="text-xs font-mono font-semibold text-foreground">
+                  rhl skill update [name]
+                </code>
+                <div className="md:col-span-2 text-xs text-muted-foreground">
+                  Re-copies an installed skill (or all of them) from the latest CLI release. Takes
+                  the same <code className="font-mono text-foreground">--target</code>.
+                </div>
+              </div>
+
+              <div className="py-4 grid grid-cols-1 md:grid-cols-3 gap-2 items-baseline">
+                <code className="text-xs font-mono font-semibold text-foreground">
+                  rhl skill validate &lt;name&gt;
+                </code>
+                <div className="md:col-span-2 text-xs text-muted-foreground">
+                  Checks a skill’s SKILL.md frontmatter and folder layout before you share it.
+                </div>
+              </div>
+
+              <div className="py-4 grid grid-cols-1 md:grid-cols-3 gap-2 items-baseline">
+                <code className="text-xs font-mono font-semibold text-foreground">
+                  rhl skill create &lt;name&gt;
+                </code>
+                <div className="md:col-span-2 text-xs text-muted-foreground">
+                  Scaffolds a new skill folder with a valid SKILL.md to start writing your own.
                 </div>
               </div>
 
@@ -162,14 +222,13 @@ export default function RhlCliPage(): React.JSX.Element {
                   rhl create &lt;template&gt;
                 </code>
                 <div className="md:col-span-2 text-xs text-muted-foreground">
-                  Scaffolds a new project, bot, or utility from standardized strict TypeScript templates.
+                  Scaffolds a project from a bundled template: nextjs, react, node or whatsapp-bot.
+                  Run it without arguments to list them.
                 </div>
               </div>
 
               <div className="py-4 grid grid-cols-1 md:grid-cols-3 gap-2 items-baseline">
-                <code className="text-xs font-mono font-semibold text-foreground">
-                  rhl --help
-                </code>
+                <code className="text-xs font-mono font-semibold text-foreground">rhl --help</code>
                 <div className="md:col-span-2 text-xs text-muted-foreground">
                   Prints global options, version info, and available command flags.
                 </div>
@@ -194,11 +253,17 @@ export default function RhlCliPage(): React.JSX.Element {
               </div>
               <div className="border border-border p-4 rounded-md bg-card">
                 <div className="font-semibold text-foreground mb-1">Type Safety</div>
-                <p>100% strict TypeScript. Zero use of <code className="text-foreground">any</code> or <code className="text-foreground">unknown</code>.</p>
+                <p>
+                  100% strict TypeScript. Zero use of <code className="text-foreground">any</code>{' '}
+                  or <code className="text-foreground">unknown</code>.
+                </p>
               </div>
               <div className="border border-border p-4 rounded-md bg-card">
                 <div className="font-semibold text-foreground mb-1">Bundle & Dependencies</div>
-                <p>Featherlight bundle compiled via tsup; picocolors for zero-overhead terminal output.</p>
+                <p>
+                  Featherlight bundle compiled via tsup; picocolors for zero-overhead terminal
+                  output.
+                </p>
               </div>
               <div className="border border-border p-4 rounded-md bg-card">
                 <div className="font-semibold text-foreground mb-1">Monorepo Integration</div>
@@ -215,7 +280,8 @@ export default function RhlCliPage(): React.JSX.Element {
               Ready to use RHL CLI?
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Follow our quickstart guide to clone the monorepo and run your first command in seconds.
+              Install your first skill into Claude Code and call it with a slash command in under a
+              minute.
             </p>
             <div className="pt-2">
               <Link href="/quickstart">

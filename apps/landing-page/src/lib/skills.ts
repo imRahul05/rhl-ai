@@ -55,6 +55,10 @@ export interface SkillEntry {
   readonly summary: string;
   /** Markdown body without the leading H1 (the page renders its own title). */
   readonly body: string;
+  /** npm package name from the skill's package.json, if it is published. */
+  readonly npmName?: string;
+  /** Published package version (package.json), falling back to SKILL.md frontmatter. */
+  readonly version?: string;
 }
 
 /**
@@ -93,7 +97,15 @@ function firstSentence(text: string): string {
 function readSkill(root: string, slug: string): SkillEntry {
   const raw = fs.readFileSync(path.join(root, slug, 'SKILL.md'), 'utf8');
   const { metadata, instructions } = parseSkillMarkdown(raw);
+  let pkg: { name?: unknown; version?: unknown } = {};
+  try {
+    pkg = JSON.parse(fs.readFileSync(path.join(root, slug, 'package.json'), 'utf8')) as typeof pkg;
+  } catch {
+    // Skill without a package.json: not published to npm.
+  }
   return {
+    npmName: typeof pkg.name === 'string' ? pkg.name : undefined,
+    version: typeof pkg.version === 'string' ? pkg.version : metadata.version,
     slug,
     title: toTitle(slug),
     metadata,

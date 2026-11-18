@@ -5,13 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Reveal } from '@/components/motion/reveal';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { getAllSkills } from '@/lib/skills';
+import { skillInstallCommand } from '@/lib/repo';
 
 export default function SkillsCatalogPage(): React.JSX.Element {
   const skills = getAllSkills();
 
   return (
     <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
-
       <main id="main" className="flex-1">
         {/* Header Section */}
         <section className="py-16 md:py-20 border-b border-border">
@@ -28,7 +28,8 @@ export default function SkillsCatalogPage(): React.JSX.Element {
               Skills
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-              Reusable intelligence for coding agents. A curated library of behavioral heuristics, review rules, and diagnostic loops.
+              Reusable intelligence for coding agents. A curated library of behavioral heuristics,
+              review rules, and diagnostic loops.
             </p>
           </div>
         </section>
@@ -70,17 +71,19 @@ export default function SkillsCatalogPage(): React.JSX.Element {
 
                   {/* Middle Column: Summary & Description */}
                   <div className="md:col-span-6 space-y-3">
-                    <p className="text-sm font-medium text-foreground">
-                      {skill.summary}
-                    </p>
+                    <p className="text-sm font-medium text-foreground">{skill.summary}</p>
                     {skill.metadata.description !== skill.summary ? (
                       <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">
                         {skill.metadata.description}
                       </p>
                     ) : null}
-                    <div className="pt-2 font-mono text-xs text-muted-foreground">
+                    <div className="pt-2 font-mono text-xs text-muted-foreground break-all">
                       <span className="text-primary mr-2">$</span>
-                      pnpm rhl skill install {skill.slug}
+                      {skillInstallCommand(skill.slug)}
+                    </div>
+                    <div className="font-mono text-xs text-muted-foreground">
+                      then <span className="text-foreground">/{skill.slug}</span> in Claude Code
+                      {skill.version ? <span> · v{skill.version}</span> : null}
                     </div>
                   </div>
 
@@ -102,7 +105,8 @@ export default function SkillsCatalogPage(): React.JSX.Element {
               <div>
                 <span className="font-semibold text-foreground">Authoring custom skills?</span>
                 <p className="mt-0.5">
-                  Follow our standard YAML frontmatter schema to contribute your own agent skills to the monorepo.
+                  Follow our standard YAML frontmatter schema to contribute your own agent skills to
+                  the monorepo.
                 </p>
               </div>
               <Link

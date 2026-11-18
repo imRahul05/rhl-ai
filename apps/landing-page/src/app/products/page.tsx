@@ -4,6 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Reveal } from '@/components/motion/reveal';
 import { ArrowRight, ChevronRight } from 'lucide-react';
+import { getPackageVersion } from '@/lib/repo';
+
+/** Shown as `v<version>` from the package's own package.json at build time. */
+const v = (dir: string): string => {
+  const version = getPackageVersion(dir);
+  return version ? `v${version}` : '';
+};
 
 interface ProductItem {
   id: string;
@@ -25,12 +32,12 @@ const PRODUCTS: ProductItem[] = [
     name: 'RHL CLI',
     packageScope: '@rhl-ai/cli',
     category: 'CLI ORCHESTRATOR',
-    version: 'v0.1.0',
+    version: v('packages/cli'),
     status: 'Core Tool',
     headline: 'The central command-line engine for agent engineering workflows.',
     description:
       'Discovers, validates, and installs agent skills into local assistant directories. Scaffolds new projects, checks workspace schemas, and executes type-safe automation pipelines.',
-    installCommand: 'pnpm rhl skill list',
+    installCommand: 'npx @rhl-ai/cli skill list',
     href: '/products/rhl-cli',
     features: [
       'Automated skill discovery across the monorepo',
@@ -44,18 +51,18 @@ const PRODUCTS: ProductItem[] = [
     name: 'Agent Skills System',
     packageScope: '@rhl-ai/skills',
     category: 'BEHAVIORAL INTELLIGENCE',
-    version: 'v1.0.0',
+    version: v('packages/skills'),
     status: '3 Verified Skills',
     headline: 'Reusable behavioral intelligence and decision heuristics for coding agents.',
     description:
       'A library of structured skills that teach coding assistants how to review code, diagnose performance bottlenecks, and enforce architectural boundaries without adding runtime overhead.',
-    installCommand: 'pnpm rhl skill install <name>',
+    installCommand: 'npx @rhl-ai/cli skill install <name> --target ~/.claude/skills',
     href: '/products/skills',
     features: [
       'Decoupled from application runtime bundles (0 KB footprint)',
       'Structured YAML frontmatter and markdown specifications',
       'Multi-axis decision heuristics for coding agents',
-      'Seamlessly portable between Antigravity, Claude Code, and Codex',
+      'Call any skill in Claude Code with its slash command, e.g. /code-reviewer',
     ],
   },
   {
@@ -64,7 +71,7 @@ const PRODUCTS: ProductItem[] = [
     packageScope: 'create-github-whatsapp-notifier',
     category: 'PRODUCTION WEBHOOK BOT',
     version: 'v1.0.6',
-    status: 'npm Published',
+    status: 'Template in rhl create',
     headline: 'Instant GitHub webhook notifications delivered directly to WhatsApp.',
     description:
       'Scaffold and deploy a robust Express webhook receiver that translates GitHub PR reviews, merges, and CI failures into high-priority WhatsApp messages via Twilio.',
@@ -82,12 +89,12 @@ const PRODUCTS: ProductItem[] = [
     name: 'Scaffolding Engine',
     packageScope: '@rhl-ai/scaffold',
     category: 'TEMPLATE GENERATOR',
-    version: 'v0.1.0',
-    status: 'Internal Package',
+    version: v('packages/scaffold'),
+    status: 'npm Published',
     headline: 'Headless project template generation for apps, bots, and agents.',
     description:
       'Underlying generator engine powering create-commands. Generates standardized directory layouts, strict tsconfigs, environment templates, and CI/CD pipelines.',
-    installCommand: 'pnpm --filter @rhl-ai/scaffold build',
+    installCommand: 'npx @rhl-ai/cli create',
     href: '/architecture',
     features: [
       'Strict TypeScript configuration templates',
@@ -101,12 +108,12 @@ const PRODUCTS: ProductItem[] = [
     name: 'Core Utilities',
     packageScope: '@rhl-ai/utils',
     category: 'SHARED RUNTIME UTILITIES',
-    version: 'v0.1.0',
-    status: 'Internal Package',
+    version: v('packages/utils'),
+    status: 'npm Published',
     headline: 'Strictly typed shared utilities across all RHL AI tools.',
     description:
       'Common logging, ANSI formatting, validation helpers, and error boundaries shared across CLI commands and automation webhooks.',
-    installCommand: 'pnpm --filter @rhl-ai/utils build',
+    installCommand: 'npm install @rhl-ai/utils',
     href: '/architecture',
     features: [
       '100% strict TypeScript types with zero any or unknown',
@@ -120,7 +127,6 @@ const PRODUCTS: ProductItem[] = [
 export default function ProductsPage(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
-
       <main id="main" className="flex-1">
         {/* Page Hero */}
         <section className="py-16 md:py-20 border-b border-border">
@@ -137,7 +143,8 @@ export default function ProductsPage(): React.JSX.Element {
               Products
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-              Developer tools, behavioral intelligence, and automations built to work together in modern AI-assisted engineering workflows.
+              Developer tools, behavioral intelligence, and automations built to work together in
+              modern AI-assisted engineering workflows.
             </p>
           </div>
         </section>

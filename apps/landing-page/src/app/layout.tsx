@@ -8,12 +8,13 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { MotionProvider } from '@/components/motion/motion-provider';
 import { ScrollProgress } from '@/components/motion/scroll-progress';
 import { Header } from '@/components/header';
+import { getPackageVersion } from '@/lib/repo';
 import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
   title: 'RHL AI — Agent skills, a CLI, and tooling that work together',
   description:
-    'RHL AI packages engineering judgment as SKILL.md files, with a CLI that validates and installs them into ~/.agents/skills. Plus project templates and a GitHub → WhatsApp notifier.',
+    'RHL AI packages engineering judgment as SKILL.md files, with a CLI that installs them into Claude Code (~/.claude/skills) or any agent, used as slash commands like /code-reviewer. Plus project templates and a GitHub → WhatsApp notifier.',
   keywords: [
     'RHL AI',
     'AI Skills',
@@ -45,9 +46,7 @@ export interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({
-  children,
-}: RootLayoutProps): React.JSX.Element {
+export default function RootLayout({ children }: RootLayoutProps): React.JSX.Element {
   return (
     <html
       lang="en"
@@ -71,7 +70,7 @@ export default function RootLayout({
           <MotionProvider>
             <SmoothScrollProvider>
               <ScrollProgress />
-              <Header />
+              <Header version={getPackageVersion('packages/cli')} />
               {children}
               <Footer />
             </SmoothScrollProvider>

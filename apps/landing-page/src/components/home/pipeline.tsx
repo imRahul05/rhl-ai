@@ -75,19 +75,19 @@ const STAGES: Stage[] = [
     id: 'install',
     verb: 'Install',
     title: 'Copy it where agents look.',
-    body: 'The folder lands in ~/.agents/skills as plain files. No daemon, no lockfile, nothing added to your app.',
-    stop: '~/.agents/skills',
+    body: 'The folder lands in ~/.claude/skills (or any agent’s skills folder) as plain files. No daemon, no lockfile, nothing added to your app.',
+    stop: '~/.claude/skills',
     panelTitle: 'zsh',
     lines: [
-      { kind: 'cmd', text: 'rhl skill install code-reviewer' },
+      { kind: 'cmd', text: 'rhl skill install code-reviewer --target ~/.claude/skills' },
       { kind: 'gap', text: '' },
       { kind: 'info', text: "Installing skill 'code-reviewer'..." },
       {
         kind: 'ok',
-        text: "Skill 'code-reviewer' successfully installed to '~/.agents/skills/code-reviewer'.",
+        text: "Skill 'code-reviewer' successfully installed to '~/.claude/skills/code-reviewer'.",
       },
       { kind: 'gap', text: '' },
-      { kind: 'cmd', text: 'ls ~/.agents/skills/code-reviewer' },
+      { kind: 'cmd', text: 'ls ~/.claude/skills/code-reviewer' },
       { kind: 'plain', text: 'SKILL.md  examples/  references/  scripts/' },
     ],
   },
@@ -95,10 +95,12 @@ const STAGES: Stage[] = [
     id: 'apply',
     verb: 'Apply',
     title: 'The agent reviews the way you would.',
-    body: 'With the skill loaded, every finding arrives in the same shape: file, severity, problem, suggested fix.',
+    body: 'Type /code-reviewer in Claude Code (or just ask for a review). Every finding arrives in the same shape: file, severity, problem, suggested fix.',
     stop: 'agent',
-    panelTitle: 'agent · code-reviewer',
+    panelTitle: 'claude · /code-reviewer',
     lines: [
+      { kind: 'cmd', text: '/code-reviewer' },
+      { kind: 'gap', text: '' },
       { kind: 'bold', text: 'Finding 1: Unsafe Type Assertion' },
       { kind: 'gap', text: '' },
       { kind: 'plain', text: 'File      packages/scaffold/src/copier.ts:42' },
@@ -230,10 +232,7 @@ export function Pipeline(): React.JSX.Element {
 
 function StaticPipeline(): React.JSX.Element {
   return (
-    <section
-      aria-labelledby="pipeline-title"
-      className="border-b border-border py-24 sm:py-32"
-    >
+    <section aria-labelledby="pipeline-title" className="border-b border-border py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionIntro />
         <ol className="mt-12 space-y-12">
@@ -268,7 +267,7 @@ function PinnedPipeline(): React.JSX.Element {
   const travel = useTransform(
     scrollYProgress,
     [0, 0.16, 0.3, 0.42, 0.56, 0.68, 0.82, 1],
-    [0, 0, 1 / 3, 1 / 3, 2 / 3, 2 / 3, 1, 1]
+    [0, 0, 1 / 3, 1 / 3, 2 / 3, 2 / 3, 1, 1],
   );
   const tokenLeft = useTransform(travel, (v) => `${v * 100}%`);
   // Slide the chip across its own width so it never overhangs either end.
@@ -317,7 +316,7 @@ function PinnedPipeline(): React.JSX.Element {
                             ? 'text-foreground'
                             : state === 'done'
                               ? 'text-muted-foreground'
-                              : 'text-muted-foreground/60'
+                              : 'text-muted-foreground/60',
                         )}
                       >
                         <span className={state === 'active' ? 'text-primary' : undefined}>
@@ -370,7 +369,7 @@ function PinnedPipeline(): React.JSX.Element {
                           'absolute top-8 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-colors duration-300',
                           index <= activeIndex
                             ? 'border-primary bg-primary'
-                            : 'border-border bg-background'
+                            : 'border-border bg-background',
                         )}
                         style={{ left: `${(index / LAST) * 100}%` }}
                       />
@@ -396,7 +395,7 @@ function PinnedPipeline(): React.JSX.Element {
                             : index === LAST
                               ? '-right-3'
                               : '-translate-x-1/2',
-                          index === activeIndex && 'text-foreground'
+                          index === activeIndex && 'text-foreground',
                         )}
                         style={
                           index === 0 || index === LAST

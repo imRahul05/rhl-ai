@@ -44,6 +44,25 @@ function readDescription(readmePath: string): string {
   }
 }
 
+/** `version` from a workspace package.json (path relative to the repo root), read at build time. */
+export function getPackageVersion(relativeDir: string): string {
+  try {
+    const raw = fs.readFileSync(path.join(findRepoRoot(), relativeDir, 'package.json'), 'utf8');
+    const parsed = JSON.parse(raw) as { version?: unknown };
+    return typeof parsed.version === 'string' ? parsed.version : '';
+  } catch {
+    return '';
+  }
+}
+
+/** Where Claude Code loads personal skills from. */
+export const CLAUDE_SKILLS_DIR = '~/.claude/skills';
+
+/** The install command shown everywhere a skill is offered. */
+export function skillInstallCommand(slug: string): string {
+  return `npx @rhl-ai/cli skill install ${slug} --target ${CLAUDE_SKILLS_DIR}`;
+}
+
 /**
  * Real counts read from the repo at build time, so the numbers on the landing
  * page can never drift from what actually ships.
@@ -53,7 +72,7 @@ export function getRepoFacts(): RepoFacts {
   const templatesDir = path.join(root, 'templates');
   return {
     packages: listDirs(path.join(root, 'packages')).filter((name) =>
-      fs.existsSync(path.join(root, 'packages', name, 'package.json'))
+      fs.existsSync(path.join(root, 'packages', name, 'package.json')),
     ),
     templates: listDirs(templatesDir).map((name) => ({
       name,

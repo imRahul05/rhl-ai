@@ -8,7 +8,6 @@ import { siGithub } from 'simple-icons';
 export default function SkillsProductPage(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
-
       <main id="main" className="flex-1">
         {/* Breadcrumb & Hero */}
         <section className="py-16 md:py-24 border-b border-border">
@@ -48,7 +47,14 @@ export default function SkillsProductPage(): React.JSX.Element {
                 rel="noopener noreferrer"
               >
                 <Button variant="outline" size="lg" className="gap-2">
-                  <svg role="img" viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-label={siGithub.title}><path d={siGithub.path} /></svg>
+                  <svg
+                    role="img"
+                    viewBox="0 0 24 24"
+                    className="w-4 h-4 fill-current"
+                    aria-label={siGithub.title}
+                  >
+                    <path d={siGithub.path} />
+                  </svg>
                   View Skills on GitHub
                 </Button>
               </Link>
@@ -65,15 +71,32 @@ export default function SkillsProductPage(): React.JSX.Element {
             <div className="rounded-lg border border-border bg-card p-5 font-mono text-xs sm:text-[13px] leading-relaxed overflow-x-auto shadow-sm">
               <div className="text-muted-foreground mb-1"># skills/code-reviewer/SKILL.md</div>
               <div className="text-primary font-semibold">---</div>
-              <div><span className="text-foreground font-semibold">name</span>: code-reviewer</div>
-              <div><span className="text-foreground font-semibold">description</span>: Expert AI code reviewer for strict TypeScript and performance.</div>
-              <div><span className="text-foreground font-semibold">version</span>: 1.0.0</div>
-              <div><span className="text-foreground font-semibold">tags</span>: [code-review, typescript, architecture, security]</div>
+              <div>
+                <span className="text-foreground font-semibold">name</span>: code-reviewer
+              </div>
+              <div>
+                <span className="text-foreground font-semibold">description</span>: Expert AI code
+                reviewer for strict TypeScript and performance.
+              </div>
+              <div>
+                <span className="text-foreground font-semibold">version</span>: 1.0.0
+              </div>
+              <div>
+                <span className="text-foreground font-semibold">tags</span>: [code-review,
+                typescript, architecture, security]
+              </div>
               <div className="text-primary font-semibold">---</div>
               <div className="mt-3 text-muted-foreground">## Operating Framework</div>
-              <div className="text-foreground/90">1. Evaluate diff against 5 core axes (Correctness, Type Safety, Architecture, Security, Performance)</div>
-              <div className="text-foreground/90">2. Classify feedback into 3 strict tiers (Blocking, Non-Blocking, Nitpick)</div>
-              <div className="text-foreground/90">3. Synthesize exact line-targeted replacement solutions</div>
+              <div className="text-foreground/90">
+                1. Evaluate diff against 5 core axes (Correctness, Type Safety, Architecture,
+                Security, Performance)
+              </div>
+              <div className="text-foreground/90">
+                2. Classify feedback into 3 strict tiers (Blocking, Non-Blocking, Nitpick)
+              </div>
+              <div className="text-foreground/90">
+                3. Synthesize exact line-targeted replacement solutions
+              </div>
             </div>
           </div>
         </section>
@@ -89,10 +112,16 @@ export default function SkillsProductPage(): React.JSX.Element {
             </h2>
             <div className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl space-y-3">
               <p>
-                Hardcoding LLM prompt instructions into frontend JavaScript bundles bloats user payload sizes, couples prompts to application build pipelines, and makes prompt updates tedious.
+                Hardcoding LLM prompt instructions into frontend JavaScript bundles bloats user
+                payload sizes, couples prompts to application build pipelines, and makes prompt
+                updates tedious.
               </p>
               <p>
-                <strong className="text-foreground">The RHL AI Skills System</strong> decouples intelligence from code. Skills live in declarative markdown schemas with standardized YAML frontmatter, resulting in <strong className="text-foreground">0 KB bundle overhead</strong> and universal portability across AI agent runtimes.
+                <strong className="text-foreground">The RHL AI Skills System</strong> decouples
+                intelligence from code. Skills live in declarative markdown schemas with
+                standardized YAML frontmatter, resulting in{' '}
+                <strong className="text-foreground">0 KB bundle overhead</strong> and universal
+                portability across AI agent runtimes.
               </p>
             </div>
           </div>
@@ -115,7 +144,8 @@ export default function SkillsProductPage(): React.JSX.Element {
                 <span className="text-xs font-mono text-primary font-semibold">01 / ENCODE</span>
                 <h3 className="font-semibold text-foreground text-base">Standardized Rules</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Engineering domain expertise is written in structured, unambiguous decision trees and negative constraints.
+                  Engineering domain expertise is written in structured, unambiguous decision trees
+                  and negative constraints.
                 </p>
               </div>
 
@@ -123,7 +153,13 @@ export default function SkillsProductPage(): React.JSX.Element {
                 <span className="text-xs font-mono text-primary font-semibold">02 / MOUNT</span>
                 <h3 className="font-semibold text-foreground text-base">Zero Runtime Bundling</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Installed to agent instruction directories (<code className="text-foreground font-mono text-[11px]">~/.agents/skills/</code>) without adding code to your app build.
+                  Installed as plain files into your agent’s skills folder (
+                  <code className="text-foreground font-mono text-[11px]">~/.claude/skills/</code>{' '}
+                  for Claude Code, or{' '}
+                  <code className="text-foreground font-mono text-[11px]">~/.agents/skills/</code>),
+                  then called with{' '}
+                  <code className="text-foreground font-mono text-[11px]">/skill-name</code>.
+                  Nothing is added to your app build.
                 </p>
               </div>
 
@@ -131,7 +167,8 @@ export default function SkillsProductPage(): React.JSX.Element {
                 <span className="text-xs font-mono text-primary font-semibold">03 / ENFORCE</span>
                 <h3 className="font-semibold text-foreground text-base">Consistent Execution</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Agents follow precise 3-tier severity classification and actionable code diff generation on every task.
+                  Agents follow precise 3-tier severity classification and actionable code diff
+                  generation on every task.
                 </p>
               </div>
             </div>
@@ -150,7 +187,10 @@ export default function SkillsProductPage(): React.JSX.Element {
                   Available in the catalog
                 </h2>
               </div>
-              <Link href="/skills" className="text-xs font-medium text-muted-foreground hover:text-foreground">
+              <Link
+                href="/skills"
+                className="text-xs font-medium text-muted-foreground hover:text-foreground"
+              >
                 View all skills →
               </Link>
             </div>
@@ -160,10 +200,13 @@ export default function SkillsProductPage(): React.JSX.Element {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-foreground text-lg">Code Reviewer</h3>
-                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">v1.0.0</Badge>
+                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">
+                      v1.0.0
+                    </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground max-w-xl">
-                    Expert AI code reviewer enforcing strict TypeScript, 5-axis inspections, and multi-tier feedback.
+                    Expert AI code reviewer enforcing strict TypeScript, 5-axis inspections, and
+                    multi-tier feedback.
                   </p>
                 </div>
                 <Link href="/skills/code-reviewer">
@@ -177,11 +220,16 @@ export default function SkillsProductPage(): React.JSX.Element {
               <div className="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-foreground text-lg">Frontend Performance Engineer</h3>
-                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">v1.0.0</Badge>
+                    <h3 className="font-bold text-foreground text-lg">
+                      Frontend Performance Engineer
+                    </h3>
+                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">
+                      v1.0.0
+                    </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground max-w-xl">
-                    Evidence-led web performance diagnostics for Core Web Vitals (LCP, INP, CLS) and bundle optimization.
+                    Evidence-led web performance diagnostics for Core Web Vitals (LCP, INP, CLS) and
+                    bundle optimization.
                   </p>
                 </div>
                 <Link href="/skills/frontend-performance-engineer">
@@ -196,10 +244,13 @@ export default function SkillsProductPage(): React.JSX.Element {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-foreground text-lg">PR Description Writer</h3>
-                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">v1.0.0</Badge>
+                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">
+                      v1.0.0
+                    </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground max-w-xl">
-                    Rigorous PR descriptions backed by real verification runs and annotated before/after browser evidence.
+                    Rigorous PR descriptions backed by real verification runs and annotated
+                    before/after browser evidence.
                   </p>
                 </div>
                 <Link href="/skills/pr-description-writer">
@@ -219,10 +270,14 @@ export default function SkillsProductPage(): React.JSX.Element {
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
               Install a skill into your agent today
             </h2>
-            <div className="font-mono text-xs sm:text-sm bg-card border border-border p-3 rounded-md max-w-md mx-auto text-muted-foreground">
+            <div className="font-mono text-xs sm:text-sm bg-card border border-border p-3 rounded-md max-w-xl mx-auto text-muted-foreground break-all">
               <span className="text-primary mr-2">$</span>
-              pnpm rhl skill install code-reviewer
+              npx @rhl-ai/cli skill install code-reviewer --target ~/.claude/skills
             </div>
+            <p className="text-xs text-muted-foreground">
+              Then start a new Claude Code session and type{' '}
+              <code className="font-mono text-foreground">/code-reviewer</code>.
+            </p>
             <div className="pt-2">
               <Link href="/skills">
                 <Button size="lg" className="gap-2">
