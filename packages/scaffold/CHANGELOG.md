@@ -1,5 +1,11 @@
 # @rhl-ai/scaffold
 
+## 0.1.2
+
+### Patch Changes
+
+- feat(scaffold): add whatsapp-bot template and build the notifier from it
+
 ## 0.1.1
 
 ### Patch Changes

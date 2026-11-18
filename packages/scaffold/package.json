@@ -8,7 +8,7 @@
     "url": "https://github.com/imRahul05/rhl-ai.git",
     "directory": "packages/scaffold"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Project template scaffolding engine for RHL AI templates",
   "type": "module",
   "main": "./dist/index.cjs",
