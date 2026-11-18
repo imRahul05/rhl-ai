@@ -123,6 +123,7 @@ pnpm rhl create
 pnpm rhl create nextjs my-awesome-app
 pnpm rhl create react my-spa
 pnpm rhl create node my-service
+pnpm rhl create whatsapp-bot my-bot   # GitHub webhook -> WhatsApp notifier
 ```
 
 ---

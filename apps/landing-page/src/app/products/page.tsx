@@ -68,7 +68,7 @@ const PRODUCTS: ProductItem[] = [
     headline: 'Instant GitHub webhook notifications delivered directly to WhatsApp.',
     description:
       'Scaffold and deploy a robust Express webhook receiver that translates GitHub PR reviews, merges, and CI failures into high-priority WhatsApp messages via Twilio.',
-    installCommand: 'npx create-github-whatsapp-notifier my-bot',
+    installCommand: 'npx @rhl-ai/cli create whatsapp-bot my-bot',
     href: '/products/whatsapp-bot',
     features: [
       'Scaffolds in under 30 seconds with complete environment config',

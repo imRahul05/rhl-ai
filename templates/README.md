@@ -7,6 +7,7 @@ This directory contains starter templates used by the project scaffolder (`@rhl-
 - **`nextjs/`**: Next.js App Router starter with TypeScript, Tailwind CSS, and strict linting.
 - **`react/`**: Modern React single-page application powered by Vite, TypeScript, and Tailwind CSS.
 - **`node/`**: Lightweight Node.js TypeScript starter for microservices, background workers, or CLI tools.
+- **`whatsapp-bot/`**: GitHub webhook to WhatsApp notifier (Express + Twilio). Also published standalone as `create-github-whatsapp-notifier`, which is built from this folder.
 
 ## Template Placeholders
 

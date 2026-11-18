@@ -12,6 +12,7 @@
     "README.md"
   ],
   "scripts": {
+    "build": "node ../../scripts/copy-assets.mjs ../../templates/whatsapp-bot template",
     "test": "echo \"No tests configured\""
   },
   "keywords": [
