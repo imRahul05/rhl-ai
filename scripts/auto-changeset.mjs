@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 /**
  * Automatically create `patch` changesets for publishable workspace packages
- * that changed in a push. Run in CI before `changesets/action`.
+ * with unreleased changes. Run in CI before `changesets/action`.
  *
  * Usage: node scripts/auto-changeset.mjs [--base <sha>] [--head <sha>] [--dry-run]
  *
- * - base defaults to $BEFORE_SHA (github.event.before), falling back to HEAD~1
+ * - per package, diffs from the last commit that changed its "version" line
+ *   (its last release, or its creation) to HEAD; --base overrides this
+ * - files are written but NOT committed: changesets/action resets to the pushed
+ *   sha before versioning, and untracked files survive that reset
  * - private packages are ignored
  * - changes only to CHANGELOG.md, or to package.json "version" lines, are ignored
  * - packages that already have a pending changeset are skipped
@@ -16,7 +19,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const RELEASE_COMMIT_PREFIX = 'chore: version and publish packages';
-const ZERO_SHA = /^0+$/;
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
@@ -25,6 +27,8 @@ const opt = (name) => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const dryRun = flag('--dry-run');
+// Optional override for testing: diff every package against this commit.
+const globalBase = opt('--base') ?? null;
 
 const git = (...a) =>
   execFileSync('git', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -39,24 +43,11 @@ const gitOk = (...a) => {
 const head = gitOk('rev-parse', opt('--head') ?? 'HEAD');
 if (!head) throw new Error('Cannot resolve head commit');
 
-// Resolve base: explicit/env value if it exists in history, else HEAD~1.
-let base = opt('--base') ?? process.env.BEFORE_SHA ?? '';
-if (!base || ZERO_SHA.test(base) || gitOk('cat-file', '-e', `${base}^{commit}`) === null) {
-  base = gitOk('rev-parse', `${head}~1`);
-}
-if (!base) {
-  console.log('No base commit to diff against (initial commit); nothing to do.');
-  process.exit(0);
-}
-
-// Loop guard: do not create changesets for the release commit itself.
-const subjects = git('log', '--format=%s', `${base}..${head}`).split('\n').filter(Boolean);
-if (subjects.length && subjects.every((s) => s.startsWith(RELEASE_COMMIT_PREFIX))) {
+// Loop guard: never create changesets for the release commit itself
+// (direct commit, squash merge, or merge of the changeset-release/* branch).
+const headMessage = git('log', '-1', '--format=%B', head);
+if (headMessage.startsWith(RELEASE_COMMIT_PREFIX) || headMessage.includes('changeset-release/')) {
   console.log('Release commit detected; skipping auto-changeset.');
-  process.exit(0);
-}
-if (subjects[0]?.startsWith(RELEASE_COMMIT_PREFIX)) {
-  console.log('Head is a release commit; skipping auto-changeset.');
   process.exit(0);
 }
 
@@ -91,9 +82,18 @@ for (const f of fs.readdirSync(csDir)) {
   for (const m of fm[1].matchAll(/^\s*['"]?([^'":\s][^'":]*?)['"]?\s*:/gm)) covered.add(m[1]);
 }
 
-const changedFiles = git('diff', '--name-only', `${base}..${head}`).split('\n').filter(Boolean);
+// Base for a package = the last commit that changed its "version" line, i.e. its
+// last release (or its creation). Everything after that is unreleased work.
+// This is stateless: each run recomputes it, so pending bumps accumulate
+// correctly in the Version Packages PR without committing changesets to main.
+function releaseBase(pkgDir) {
+  if (globalBase) return globalBase;
+  return (
+    gitOk('log', '-1', '--format=%H', '-G', '^\\s*"version"\\s*:', head, '--', `${pkgDir}/package.json`) || null
+  );
+}
 
-function isRelevant(pkgDir, file) {
+function isRelevant(pkgDir, file, base) {
   const rel = file.slice(pkgDir.length + 1);
   if (rel === 'CHANGELOG.md') return false;
   if (rel === 'package.json') {
@@ -110,14 +110,16 @@ function isRelevant(pkgDir, file) {
 
 const created = [];
 for (const pkg of packages) {
-  const files = changedFiles.filter((f) => f.startsWith(`${pkg.dir}/`));
-  if (!files.some((f) => isRelevant(pkg.dir, f))) continue;
+  const base = releaseBase(pkg.dir);
+  if (!base) continue;
+  const files = git('diff', '--name-only', `${base}..${head}`, '--', pkg.dir).split('\n').filter(Boolean);
+  if (!files.some((f) => isRelevant(pkg.dir, f, base))) continue;
   if (covered.has(pkg.name)) {
     console.log(`${pkg.name}: changed, but a changeset already exists; skipping.`);
     continue;
   }
   const pkgSubjects = [
-    ...new Set(git('log', '--format=%s', `${base}..${head}`, '--', pkg.dir).split('\n').filter(Boolean)),
+    ...new Set(git('log', '--no-merges', '--format=%s', `${base}..${head}`, '--', pkg.dir).split('\n').filter(Boolean)),
   ].filter((s) => !s.startsWith(RELEASE_COMMIT_PREFIX));
   const summary = (pkgSubjects.length ? pkgSubjects : [`Update ${pkg.name}`]).join('\n\n');
   const slug = pkg.name.replace(/^@/, '').replace(/[^a-zA-Z0-9]+/g, '-');
@@ -127,7 +129,7 @@ for (const pkg of packages) {
 }
 
 if (!created.length) {
-  console.log(`No publishable package changes in ${base.slice(0, 7)}..${head.slice(0, 7)}.`);
+  console.log('No unreleased publishable package changes.');
   process.exit(0);
 }
 
