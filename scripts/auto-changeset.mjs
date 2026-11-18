@@ -41,7 +41,7 @@ if (!head) throw new Error('Cannot resolve head commit');
 
 // Resolve base: explicit/env value if it exists in history, else HEAD~1.
 let base = opt('--base') ?? process.env.BEFORE_SHA ?? '';
-if (!base || ZERO_SHA.test(base) || !gitOk('cat-file', '-e', `${base}^{commit}`)) {
+if (!base || ZERO_SHA.test(base) || gitOk('cat-file', '-e', `${base}^{commit}`) === null) {
   base = gitOk('rev-parse', `${head}~1`);
 }
 if (!base) {
