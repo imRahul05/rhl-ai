@@ -68,5 +68,5 @@ Format each review comment with:
 
 ## References
 
-- See [Checklist](file:///references/checklist.md) for the complete pre-merge review checklist.
-- See [Sample Review](file:///examples/review-sample.md) for reference review outputs.
+- See [Checklist](references/checklist.md) for the complete pre-merge review checklist.
+- See [Sample Review](examples/review-sample.md) for reference review outputs.

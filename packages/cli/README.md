@@ -24,12 +24,12 @@ rhl [options] [command]
 
 ### Global options
 
-| Option | Description |
-|---|---|
+| Option          | Description                  |
+| --------------- | ---------------------------- |
 | `-v, --verbose` | Enable verbose debug logging |
-| `-s, --silent` | Suppress all console output |
-| `--version` | Print the CLI version |
-| `--help` | Print help for any command |
+| `-s, --silent`  | Suppress all console output  |
+| `--version`     | Print the CLI version        |
+| `--help`        | Print help for any command   |
 
 ---
 
@@ -49,13 +49,14 @@ rhl skill <subcommand>
 
 List all AI agent skills discovered in the repository.
 
-Skills are discovered from the `skills/` directory at the monorepo root, or `skills/` relative to `cwd`.
+Skills are discovered from the `skills/` directory at the monorepo root, then `skills/` relative to `cwd`, and finally from the skills bundled with the CLI. So `npx @rhl-ai/cli skill list` works anywhere.
 
 ```bash
 rhl skill list
 ```
 
 **Output:**
+
 ```
 Available AI Agent Skills (2):
 
@@ -81,12 +82,13 @@ rhl skill create my-skill
 rhl skill create my-skill --description "What this skill does" --author "Your Name"
 ```
 
-| Option | Description |
-|---|---|
+| Option                     | Description                                       |
+| -------------------------- | ------------------------------------------------- |
 | `-d, --description <desc>` | Short summary written into `SKILL.md` frontmatter |
-| `-a, --author <author>` | Author name written into `SKILL.md` frontmatter |
+| `-a, --author <author>`    | Author name written into `SKILL.md` frontmatter   |
 
 After creation, the CLI prints the skill path and next steps:
+
 ```
 ✔ Skill created at /path/to/skills/my-skill
 ℹ Next steps:
@@ -106,6 +108,7 @@ rhl skill validate my-skill
 ```
 
 Checks performed:
+
 - Skill directory exists
 - `SKILL.md` is present
 - `name` field in frontmatter is set and matches directory name
@@ -134,18 +137,19 @@ Exits with code `1` on failure.
 
 #### `rhl skill install <name>`
 
-Install a skill from the repository's `skills/` directory to the local agent skills directory (`~/.agents/skills/<name>`).
+Install a skill into an agent's skills directory. The default target is `~/.agents/skills/<name>`; **for Claude Code, pass `--target ~/.claude/skills`** (or `.claude/skills` to install it into the current repo for your team).
 
 ```bash
+rhl skill install code-reviewer --target ~/.claude/skills   # Claude Code
 rhl skill install code-reviewer
 rhl skill install code-reviewer --target /custom/path
 rhl skill install code-reviewer --overwrite
 ```
 
-| Option | Description |
-|---|---|
+| Option                | Description                                                 |
+| --------------------- | ----------------------------------------------------------- |
 | `-t, --target <path>` | Custom destination directory (default: `~/.agents/skills/`) |
-| `--overwrite` | Replace the skill at destination if it already exists |
+| `--overwrite`         | Replace the skill at destination if it already exists       |
 
 ```bash
 ✔ Skill 'code-reviewer' successfully installed to '/home/user/.agents/skills/code-reviewer'.
@@ -170,13 +174,17 @@ rhl skill update
 rhl skill update --target /custom/agents/skills
 ```
 
-| Option | Description |
-|---|---|
+| Option                | Description                   |
+| --------------------- | ----------------------------- |
 | `-t, --target <path>` | Custom agent skills directory |
 
 This re-installs with `overwrite: true`, so destination files are always replaced.
 
 ---
+
+#### Using an installed skill
+
+Each skill's folder name is also its command. In Claude Code, start a new session and type `/<skill-name>` (for example `/code-reviewer` or `/pr-description-writer`), or just describe the task and the agent loads the matching skill automatically. In other agents, name the skill in your prompt ("Use the code-reviewer skill to review my changes"). Every skill's npm page (`@rhl-ai/skill-<name>`) lists example prompts.
 
 ### `rhl create [template] [projectName]`
 
@@ -193,12 +201,13 @@ rhl create nextjs-app my-new-app --target ./projects
 rhl create nextjs-app my-new-app --overwrite
 ```
 
-| Option | Description |
-|---|---|
+| Option                | Description                                      |
+| --------------------- | ------------------------------------------------ |
 | `-t, --target <path>` | Destination directory (default: `process.cwd()`) |
-| `--overwrite` | Delete and replace target if it already exists |
+| `--overwrite`         | Delete and replace target if it already exists   |
 
 When called without arguments, prints all available templates:
+
 ```
 Available Starter Templates:
 
@@ -209,6 +218,7 @@ Usage:
 ```
 
 On success:
+
 ```
 ✔ Project 'my-new-app' created successfully from template 'nextjs-app'.
 
