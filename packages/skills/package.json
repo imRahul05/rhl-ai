@@ -8,7 +8,7 @@
     "url": "https://github.com/imRahul05/rhl-ai.git",
     "directory": "packages/skills"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Discovery, validation, scaffolding, and installation engine for AI agent skills",
   "type": "module",
   "main": "./dist/index.cjs",
