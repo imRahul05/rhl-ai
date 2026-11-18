@@ -6,8 +6,6 @@ Scaffold a GitHub webhook bot that sends WhatsApp notifications through Twilio.
 
 ```bash
 npx create-github-whatsapp-notifier my-bot
-# or, via the RHL CLI (same template):
-# npx @rhl-ai/cli create whatsapp-bot my-bot
 cd my-bot
 npm install
 cp .env.example .env

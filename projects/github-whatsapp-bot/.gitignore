@@ -1,3 +1,2 @@
 node_modules
-# generated from ../../templates/whatsapp-bot at build time
-template/
+.env

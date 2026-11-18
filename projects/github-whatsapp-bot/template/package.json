@@ -1,5 +1,5 @@
 {
-  "name": "{{PACKAGE_NAME}}",
+  "name": "__PROJECT_NAME__",
   "version": "1.0.0",
   "description": "GitHub webhook to WhatsApp notifier bot",
   "main": "index.js",

@@ -43,15 +43,15 @@ pnpm build`,
     title: 'Scaffold real-time WhatsApp alerts',
     description:
       'Bootstrap the production webhook notifier to receive instant WhatsApp notifications whenever pull requests are opened or reviewed.',
-    command: 'npx @rhl-ai/cli create whatsapp-bot my-bot',
-    notes:
-      'Same template as the standalone `npx create-github-whatsapp-notifier my-bot`. Configurable with Twilio credentials and username-to-phone mappings.',
+    command: 'npx create-github-whatsapp-notifier my-bot',
+    notes: 'Configurable with Twilio credentials and username-to-phone mappings.',
   },
 ];
 
 export default function QuickstartPage(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col bg-background text-foreground transition-colors">
+
       <main id="main" className="flex-1">
         {/* Header */}
         <section className="py-16 md:py-20 border-b border-border">
@@ -68,8 +68,7 @@ export default function QuickstartPage(): React.JSX.Element {
               Quickstart Guide
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-              Get up and running with the RHL AI ecosystem, command-line tooling, and agent skills
-              in under five minutes.
+              Get up and running with the RHL AI ecosystem, command-line tooling, and agent skills in under five minutes.
             </p>
           </div>
         </section>
@@ -86,7 +85,9 @@ export default function QuickstartPage(): React.JSX.Element {
                   <span className="font-mono text-xs text-primary font-bold tracking-widest">
                     STEP {step.number}
                   </span>
-                  <h2 className="text-xl font-bold tracking-tight text-foreground">{step.title}</h2>
+                  <h2 className="text-xl font-bold tracking-tight text-foreground">
+                    {step.title}
+                  </h2>
                   <p className="text-xs text-muted-foreground leading-relaxed pt-1">
                     {step.description}
                   </p>

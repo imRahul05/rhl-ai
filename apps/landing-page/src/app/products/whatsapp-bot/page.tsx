@@ -175,8 +175,7 @@ export default function WhatsAppBotPage(): React.JSX.Element {
 
             <div className="rounded-lg border border-border bg-card p-5 font-mono text-xs sm:text-[13px] space-y-2">
               <div className="text-muted-foreground"># 1. Generate bot project</div>
-              <div className="text-foreground"><span className="text-primary">$</span> npx @rhl-ai/cli create whatsapp-bot my-bot</div>
-              <div className="text-muted-foreground"># or standalone: npx create-github-whatsapp-notifier my-bot</div>
+              <div className="text-foreground"><span className="text-primary">$</span> npx create-github-whatsapp-notifier my-bot</div>
               <div className="text-muted-foreground mt-3"># 2. Configure credentials</div>
               <div className="text-foreground"><span className="text-primary">$</span> cd my-bot && cp .env.example .env</div>
               <div className="text-muted-foreground mt-3"># 3. Start local server</div>
