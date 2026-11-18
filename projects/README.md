@@ -6,7 +6,7 @@ This directory is designated for experimental applications, proofs of concept (P
 
 ### [`github-whatsapp-bot`](./github-whatsapp-bot)
 
-A CLI tool and webhook service (`create-github-whatsapp-notifier`) that listens for GitHub webhook events (pull requests, issues, assignments, reviews) and sends formatted WhatsApp notifications via Twilio.
+A CLI tool and webhook service (`create-github-whatsapp-notifier`) that listens for GitHub webhook events (pull requests, issues, assignments, reviews) and sends formatted WhatsApp notifications via Twilio. Its template lives in [`templates/whatsapp-bot`](../templates/whatsapp-bot), so it is also available as `rhl create whatsapp-bot <name>`; this package copies it in at build time.
 
 ## Guidelines
 

@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// Generated at build time from the shared templates/whatsapp-bot (also used by `rhl create whatsapp-bot`).
 const TEMPLATE_DIR = path.resolve(__dirname, "../template");
 
 function printUsage() {
@@ -28,7 +29,9 @@ function copyTemplate(src, dest, projectName) {
     }
 
     let content = fs.readFileSync(srcPath, "utf8");
-    content = content.replaceAll("__PROJECT_NAME__", projectName);
+    content = content
+      .replaceAll("{{PROJECT_NAME}}", projectName)
+      .replaceAll("{{PACKAGE_NAME}}", projectName.toLowerCase().replace(/[^a-z0-9-_]/g, "-"));
     fs.writeFileSync(destPath, content, "utf8");
   }
 }
