@@ -78,22 +78,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      # Writes .changeset/auto-*.md for packages with unreleased changes. The files
+      # stay uncommitted on purpose: changesets/action resets its release branch to
+      # this push's sha, and untracked files survive that reset, so they land in the
+      # "Version Packages" PR. The script recomputes from each package's last version
+      # bump on every run, so nothing needs to be persisted on main.
       - name: Generate automatic changesets
         run: node scripts/auto-changeset.mjs
-        env:
-          BEFORE_SHA: ${{ github.event.before }}
-
-      # Persist generated changesets on main so every push accumulates into the
-      # "Version Packages" PR (pushes made with GITHUB_TOKEN do not retrigger workflows).
-      - name: Commit automatic changesets
-        run: |
-          if [ -n "$(git status --porcelain .changeset)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add .changeset
-            git commit -m "chore(changeset): add automatic changesets [skip ci]"
-            git push origin HEAD:main
-          fi
 
       - name: Create Release PR or Publish
         id: changesets
