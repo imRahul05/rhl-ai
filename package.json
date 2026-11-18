@@ -23,8 +23,9 @@
     "rhl": "node packages/cli/dist/index.js",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build && changeset publish",
-    "release:ci": "node scripts/check-publish-auth.mjs && pnpm release"
+    "release": "turbo run build && node scripts/check-publishable-packages.mjs && changeset publish",
+    "release:ci": "node scripts/check-publish-auth.mjs && pnpm release",
+    "prepublishOnly": "node scripts/guard-root-publish.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.12",
