@@ -219,10 +219,10 @@ Need a `minor` or `major` bump? Run `pnpm changeset` in your PR and select the b
 ### One-time setup
 
 - Create the `@rhl-ai` organization on npmjs.com (unscoped `create-github-whatsapp-notifier` needs no org).
-- For each package, on npmjs.com go to Settings, Trusted Publisher, and add GitHub Actions with repository `imRahul05/rhl-ai` and workflow `release.yml`.
-- Alternative or fallback: add an npm automation token as the `NPM_TOKEN` repository secret.
-- Trusted publishers are configured per existing package, so the **first publish of a brand-new package** needs `NPM_TOKEN`; configure its Trusted Publisher afterwards.
-- If `main` is branch-protected, allow GitHub Actions to push (for the automatic changeset commit) and to create PRs.
+- Publishing uses **npm Trusted Publishing (OIDC) only**. The release job has `id-token: write` and injects no npm token; `scripts/check-publish-auth.mjs` runs before `changeset publish` and fails if a legacy credential (`NPM_TOKEN`, `NODE_AUTH_TOKEN`, an `_authToken` in an `.npmrc`) is present.
+- For each package, on npmjs.com go to Settings, Trusted Publisher, add GitHub Actions with owner `imRahul05`, repository `rhl-ai`, workflow filename `release.yml`, and make sure **`npm publish`** is an allowed action (newer configurations allow only staged publishing by default).
+- A trusted publisher can only be added to a package that already exists. Bootstrap a **brand-new package** once by publishing it manually with your 2FA (`npm publish --access public` from its directory), then add its Trusted Publisher; later releases are automatic.
+- In repo Settings → Actions → General, enable "Allow GitHub Actions to create and approve pull requests" (needed for the Version Packages PR).
 
 ---
 
