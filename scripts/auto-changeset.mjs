@@ -52,9 +52,9 @@ if (headMessage.startsWith(RELEASE_COMMIT_PREFIX) || headMessage.includes('chang
 }
 
 // Discover workspace packages from pnpm-workspace.yaml.
-const wsGlobs = [...fs.readFileSync('pnpm-workspace.yaml', 'utf8').matchAll(/^\s*-\s*['"]?([^'"\s]+)['"]?\s*$/gm)].map(
-  (m) => m[1],
-);
+const wsGlobs = [
+  ...fs.readFileSync('pnpm-workspace.yaml', 'utf8').matchAll(/^\s*-\s*['"]?([^'"\s]+)['"]?\s*$/gm),
+].map((m) => m[1]);
 const packages = [];
 for (const glob of wsGlobs) {
   if (!glob.endsWith('/*')) continue;
@@ -67,7 +67,18 @@ for (const glob of wsGlobs) {
     if (!fs.existsSync(pj)) continue;
     const json = JSON.parse(fs.readFileSync(pj, 'utf8'));
     if (json.private || !json.name) continue;
-    packages.push({ dir, name: json.name });
+    // Extra source dirs the package bundles at build time, taken from its
+    // turbo.json build inputs (e.g. "../../templates/**" for @rhl-ai/scaffold).
+    const extra = [];
+    const turboPath = path.join(dir, 'turbo.json');
+    if (fs.existsSync(turboPath)) {
+      const inputs = JSON.parse(fs.readFileSync(turboPath, 'utf8'))?.tasks?.build?.inputs ?? [];
+      for (const input of inputs) {
+        if (!input.startsWith('../')) continue;
+        extra.push(path.posix.normalize(path.posix.join(dir, input.replace(/\/\*\*$/, ''))));
+      }
+    }
+    packages.push({ dir, name: json.name, paths: [dir, ...extra] });
   }
 }
 
@@ -89,11 +100,21 @@ for (const f of fs.readdirSync(csDir)) {
 function releaseBase(pkgDir) {
   if (globalBase) return globalBase;
   return (
-    gitOk('log', '-1', '--format=%H', '-G', '^\\s*"version"\\s*:', head, '--', `${pkgDir}/package.json`) || null
+    gitOk(
+      'log',
+      '-1',
+      '--format=%H',
+      '-G',
+      '^\\s*"version"\\s*:',
+      head,
+      '--',
+      `${pkgDir}/package.json`,
+    ) || null
   );
 }
 
 function isRelevant(pkgDir, file, base) {
+  if (!file.startsWith(`${pkgDir}/`)) return true; // bundled source outside the package dir
   const rel = file.slice(pkgDir.length + 1);
   if (rel === 'CHANGELOG.md') return false;
   if (rel === 'package.json') {
@@ -112,14 +133,20 @@ const created = [];
 for (const pkg of packages) {
   const base = releaseBase(pkg.dir);
   if (!base) continue;
-  const files = git('diff', '--name-only', `${base}..${head}`, '--', pkg.dir).split('\n').filter(Boolean);
+  const files = git('diff', '--name-only', `${base}..${head}`, '--', ...pkg.paths)
+    .split('\n')
+    .filter(Boolean);
   if (!files.some((f) => isRelevant(pkg.dir, f, base))) continue;
   if (covered.has(pkg.name)) {
     console.log(`${pkg.name}: changed, but a changeset already exists; skipping.`);
     continue;
   }
   const pkgSubjects = [
-    ...new Set(git('log', '--no-merges', '--format=%s', `${base}..${head}`, '--', pkg.dir).split('\n').filter(Boolean)),
+    ...new Set(
+      git('log', '--no-merges', '--format=%s', `${base}..${head}`, '--', ...pkg.paths)
+        .split('\n')
+        .filter(Boolean),
+    ),
   ].filter((s) => !s.startsWith(RELEASE_COMMIT_PREFIX));
   const summary = (pkgSubjects.length ? pkgSubjects : [`Update ${pkg.name}`]).join('\n\n');
   const slug = pkg.name.replace(/^@/, '').replace(/[^a-zA-Z0-9]+/g, '-');
