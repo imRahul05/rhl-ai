@@ -60,12 +60,14 @@ const SESSIONS: Session[] = [
       {
         command: 'npx @rhl-ai/cli skill list',
         output: [
-          { kind: 'bold', text: 'Available AI Agent Skills (2):' },
+          { kind: 'bold', text: 'Available AI Agent Skills (3):' },
           { kind: 'plain', text: '• code-reviewer v1.0.0 by RHL AI' },
           { kind: 'dim', text: '  Expert AI code reviewer for strict TypeScript,' },
           { kind: 'dim', text: '  architecture, and performance.' },
           { kind: 'plain', text: '• frontend-performance-engineer' },
           { kind: 'dim', text: '  Evidence-led frontend performance engineering skill.' },
+          { kind: 'plain', text: '• pr-description-writer' },
+          { kind: 'dim', text: '  Rigorous PR descriptions with real verification.' },
         ],
       },
     ],

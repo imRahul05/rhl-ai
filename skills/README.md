@@ -58,6 +58,14 @@ Strict negative rules, bounds, and requirements.
 Pointers to supplementary guides and standards.
 ```
 
+## Catalog
+
+| Skill | Package | Description |
+|---|---|---|
+| [`code-reviewer`](./code-reviewer) | `@rhl-ai/skill-code-reviewer` | Expert AI code reviewer for strict TypeScript, architecture, and performance. |
+| [`frontend-performance-engineer`](./frontend-performance-engineer) | `@rhl-ai/skill-frontend-performance-engineer` | Evidence-led frontend performance engineering. |
+| [`pr-description-writer`](./pr-description-writer) | `@rhl-ai/skill-pr-description-writer` | Rigorous PR descriptions with real verification and annotated before/after evidence. |
+
 ## Managing Skills with CLI
 
 You can discover, validate, and scaffold skills using the `rhl` CLI:

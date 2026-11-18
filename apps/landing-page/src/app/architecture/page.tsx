@@ -32,6 +32,11 @@ const TIERS: ArchitectureTier[] = [
         path: 'skills/frontend-performance-engineer/SKILL.md',
         role: 'Core Web Vitals diagnostic loops, pattern selection, and evidence rules.',
       },
+      {
+        name: 'pr-description-writer',
+        path: 'skills/pr-description-writer/SKILL.md',
+        role: 'Evidence-backed PR descriptions with real verification and annotated visual proof.',
+      },
     ],
   },
   {
@@ -114,7 +119,8 @@ export default function ArchitecturePage(): React.JSX.Element {
               <pre className="text-foreground/90 whitespace-pre">{`rhl-ai/
 ├── skills/                     # [TIER 1: INTELLIGENCE]
 │   ├── code-reviewer/          # Declarative markdown skill schemas
-│   └── frontend-performance/   # Decision trees, evidence heuristics
+│   ├── frontend-performance/   # Decision trees, evidence heuristics
+│   └── pr-description-writer/  # PR templates, verification, visual evidence
 ├── packages/                   # [TIER 2: EXECUTION]
 │   ├── cli/                    # @rhl-ai/cli binary (Commander + ESM)
 │   ├── scaffold/               # @rhl-ai/scaffold template generator

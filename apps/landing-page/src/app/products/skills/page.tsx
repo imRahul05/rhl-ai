@@ -191,6 +191,24 @@ export default function SkillsProductPage(): React.JSX.Element {
                   </Button>
                 </Link>
               </div>
+
+              <div className="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-foreground text-lg">PR Description Writer</h3>
+                    <Badge variant="outline" size="sm" className="font-mono text-[10px]">v1.0.0</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground max-w-xl">
+                    Rigorous PR descriptions backed by real verification runs and annotated before/after browser evidence.
+                  </p>
+                </div>
+                <Link href="/skills/pr-description-writer">
+                  <Button variant="outline" size="sm" className="gap-1.5">
+                    View Skill Page
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
