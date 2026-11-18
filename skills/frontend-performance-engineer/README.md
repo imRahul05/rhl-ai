@@ -1,31 +1,92 @@
-# Frontend Performance Engineer — Agent Skill
+# @rhl-ai/skill-frontend-performance-engineer
 
-A decision-oriented performance skill distilled from 20 frontend performance case studies plus current web-performance/agent-skill practices.
-
-## What makes it different
-
-This is not a checklist that tells an agent to apply every optimization. It forces a loop:
+An evidence-led frontend performance skill for coding agents (Claude Code, Codex, Cursor, Gemini CLI and others that read `SKILL.md`). It is not a checklist that applies every optimization: it makes the agent measure first, find the actual bottleneck, pick only the patterns that fit, explain the trade-offs, make the smallest change, and verify before/after.
 
 **Measure → Localize → Select pattern → Check fit/trade-offs → Implement → Verify → Guard**
 
-## Included
+Works with React, Next.js, SPAs, SSR/streaming apps and large data-heavy interfaces.
 
-- `SKILL.md` — activation, workflow, decision rules, output contract
-- `knowledge/source-synthesis.md` — transferable lessons from all 20 case studies
-- `decision-framework/pattern-selection.md` — symptom-to-pattern decision matrix
-- `decision-framework/tradeoffs.md` — failure modes and costs
-- `patterns/` — focused playbooks
-- `knowledge/` — measurement, metrics, React/Next.js guidance
-- `evaluation.md` — routing and behavior tests
+## Quick start (Claude Code)
 
-## Installation
+```bash
+npx @rhl-ai/cli skill install frontend-performance-engineer --target ~/.claude/skills
+```
 
-For Claude Code / compatible agent skill systems, place this directory under the agent's skills directory. The exact location depends on the host tool.
+Restart Claude Code (or start a new session), then in your repository:
 
-## Recommended companion tooling
+```text
+/frontend-performance-engineer the product list page is slow on mobile
+```
 
-Use Chrome DevTools/Lighthouse/CrUX or equivalent runtime evidence when available. The skill deliberately keeps source-code findings separate from measured runtime findings.
+or just ask:
 
-## Source note
+```text
+Why is our dashboard's INP so bad? Fix the biggest cause.
+```
 
-The 20 case studies are represented as engineering lessons and decision signals. The skill does not copy article text; it turns the themes into reusable agent behavior.
+## Install
+
+| Agent                                             | Command                                                                                 | Skill ends up in                                                   |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Claude Code (all projects)                        | `npx @rhl-ai/cli skill install frontend-performance-engineer --target ~/.claude/skills` | `~/.claude/skills/frontend-performance-engineer/`                  |
+| Claude Code (one repo, shared with your team)     | `npx @rhl-ai/cli skill install frontend-performance-engineer --target .claude/skills`   | `<repo>/.claude/skills/frontend-performance-engineer/` (commit it) |
+| Agents using the shared `~/.agents/skills` folder | `npx @rhl-ai/cli skill install frontend-performance-engineer`                           | `~/.agents/skills/frontend-performance-engineer/` (default target) |
+| Any other agent                                   | Use `--target <your agent's skills folder>`                                             | `<folder>/frontend-performance-engineer/`                          |
+
+Without the CLI, the skill is just files. Download and unpack it yourself:
+
+```bash
+npm pack @rhl-ai/skill-frontend-performance-engineer
+mkdir -p ~/.claude/skills/frontend-performance-engineer
+tar -xzf rhl-ai-skill-frontend-performance-engineer-*.tgz -C ~/.claude/skills/frontend-performance-engineer --strip-components=1
+```
+
+Update later with `npx @rhl-ai/cli skill update frontend-performance-engineer --target ~/.claude/skills`. Uninstall by deleting the folder.
+
+## How to use
+
+The agent loads the skill in two ways:
+
+1. **Explicitly**: in Claude Code type **`/frontend-performance-engineer`** followed by the problem, e.g. `/frontend-performance-engineer LCP regressed after the last release`. In other agents, name the skill in your prompt: "Use the frontend-performance-engineer skill to …".
+2. **Automatically**: when you ask to make a page, interaction, bundle or navigation faster, mention a performance regression or budget, or ask for a performance review of a change.
+
+Example prompts:
+
+```text
+/frontend-performance-engineer
+The search results page takes 4s to become interactive on a mid-range Android phone.
+Our JS bundle grew 300 KB this month; find out why and what to split.
+Review this PR for performance impact before we merge it.
+```
+
+What you get back, for every recommendation:
+
+- **Finding**: evidence, user impact, root cause
+- **Decision**: pattern selected, why it fits, alternatives considered, trade-offs
+- **Change**: files affected and the minimal implementation
+- **Verification**: baseline, after, method, regression guard
+
+If evidence is missing, the agent says which measurement it needs instead of inventing numbers. It works best with runtime evidence: Chrome DevTools traces, Lighthouse, CrUX or your RUM data.
+
+## What's inside
+
+```text
+frontend-performance-engineer/
+├── SKILL.md                         # Activation, operating loop, decision rules, output contract
+├── decision-framework/
+│   ├── pattern-selection.md         # Symptom → pattern decision matrix
+│   └── tradeoffs.md                 # Failure modes and costs
+├── knowledge/                       # Measurement, metrics, framework guidance, case-study synthesis
+├── patterns/                        # Focused playbooks (code splitting, caching, rendering, images, …)
+├── examples/nextjs.md
+├── evaluation.md                    # Routing and behavior tests
+└── scripts/validate.sh              # Asset check
+```
+
+The 20 case studies behind it are distilled into engineering lessons and decision signals; no article text is copied.
+
+Source: [skills/frontend-performance-engineer](https://github.com/imRahul05/rhl-ai/tree/main/skills/frontend-performance-engineer). Part of [RHL AI](https://github.com/imRahul05/rhl-ai).
+
+## License
+
+MIT

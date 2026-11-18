@@ -6,6 +6,7 @@
   "main": "./SKILL.md",
   "files": [
     "SKILL.md",
+    "README.md",
     "examples",
     "references",
     "scripts"
