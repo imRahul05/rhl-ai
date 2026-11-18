@@ -76,10 +76,12 @@ function resolveSkillsRoot(): string {
   throw new Error(`Could not locate the repo-level skills/ directory from ${process.cwd()}`);
 }
 
+const ACRONYMS = new Set(['pr', 'ai', 'api', 'cli', 'ui', 'ci']);
+
 function toTitle(slug: string): string {
   return slug
     .split('-')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .map((w) => (ACRONYMS.has(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
     .join(' ');
 }
 
