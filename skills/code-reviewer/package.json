@@ -1,6 +1,6 @@
 {
   "name": "@rhl-ai/skill-code-reviewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Expert AI code reviewer skill for strict TypeScript, architecture, and performance",
   "type": "module",
   "main": "./SKILL.md",

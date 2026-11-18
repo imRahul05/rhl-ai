@@ -1,6 +1,6 @@
 {
   "name": "@rhl-ai/skill-frontend-performance-engineer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Evidence-led frontend performance engineering skill for AI coding agents",
   "type": "module",
   "main": "./SKILL.md",

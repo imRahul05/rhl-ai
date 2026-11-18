@@ -1,5 +1,11 @@
 # @rhl-ai/skills
 
+## 0.1.2
+
+### Patch Changes
+
+- docs(skills): explain how to install and use each skill on its npm page
+
 ## 0.1.1
 
 ### Patch Changes
