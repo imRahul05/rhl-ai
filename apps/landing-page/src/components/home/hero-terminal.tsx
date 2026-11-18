@@ -38,17 +38,17 @@ const SESSIONS: Session[] = [
     label: 'install',
     steps: [
       {
-        command: 'npx @rhl-ai/cli skill install code-reviewer',
+        command: 'npx @rhl-ai/cli skill install code-reviewer --target ~/.claude/skills',
         output: [
           { kind: 'info', text: "Installing skill 'code-reviewer'..." },
           {
             kind: 'ok',
-            text: "Skill 'code-reviewer' successfully installed to '~/.agents/skills/code-reviewer'.",
+            text: "Skill 'code-reviewer' successfully installed to '~/.claude/skills/code-reviewer'.",
           },
         ],
       },
       {
-        command: 'ls ~/.agents/skills/code-reviewer',
+        command: 'ls ~/.claude/skills/code-reviewer',
         output: [{ kind: 'plain', text: 'SKILL.md  examples/  references/  scripts/' }],
       },
     ],
@@ -199,7 +199,7 @@ export function HeroTerminal(): React.JSX.Element {
     if (frameIndex < lastFrame) {
       const id = window.setTimeout(
         () => setFrameIndex((i) => i + 1),
-        (frames[frameIndex] as Frame).wait
+        (frames[frameIndex] as Frame).wait,
       );
       return () => window.clearTimeout(id);
     }
@@ -232,7 +232,7 @@ export function HeroTerminal(): React.JSX.Element {
   const springX = useSpring(pointerX, { stiffness: 120, damping: 18 });
   const springY = useSpring(pointerY, { stiffness: 120, damping: 18 });
   const rotateX = useTransform<number, number>([scrollTilt, springY], ([tilt, py]) =>
-    reduce ? 0 : (tilt ?? 0) - (py ?? 0) * 3
+    reduce ? 0 : (tilt ?? 0) - (py ?? 0) * 3,
   );
   const rotateY = useTransform(springX, (px) => (reduce ? 0 : -5 + px * 4));
 
@@ -277,9 +277,7 @@ export function HeroTerminal(): React.JSX.Element {
                   onClick={() => selectSession(s.id)}
                   className={cn(
                     'relative rounded-[5px] px-2.5 py-1.5 font-mono text-[11px] transition-colors sm:text-xs',
-                    selected
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                    selected ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
                   )}
                 >
                   {selected ? (

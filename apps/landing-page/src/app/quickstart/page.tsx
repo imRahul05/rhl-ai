@@ -13,39 +13,42 @@ interface QuickstartStep {
 const STEPS: QuickstartStep[] = [
   {
     number: '01',
-    title: 'Clone and install the monorepo',
+    title: 'See which skills are available',
     description:
-      'Clone the RHL AI repository and install workspace dependencies using pnpm. Turborepo handles package linking automatically.',
-    command: `git clone https://github.com/imRahul05/rhl-ai.git
-cd rhl-ai
-pnpm install
-pnpm build`,
-    notes: 'Requires Node.js >= 20.0.0 and pnpm >= 9.0.0.',
+      'No clone or global install needed: the published CLI ships with every skill and template. Run it with npx from any folder.',
+    command: 'npx @rhl-ai/cli skill list',
+    notes:
+      'Requires Node.js >= 20. Prefer a global command? npm install -g @rhl-ai/cli, then use rhl.',
   },
   {
     number: '02',
-    title: 'Explore available agent skills',
+    title: 'Install a skill into Claude Code',
     description:
-      'Use the RHL CLI orchestrator to scan the repository skills catalog and view available behavioral prompt schemas.',
-    command: 'pnpm rhl skill list',
-    notes: 'Scans skills/ directory and verifies YAML frontmatter specifications.',
+      'Copy a skill into the folder your coding agent reads. For Claude Code that is ~/.claude/skills (all projects) or .claude/skills inside a repo (shared with your team).',
+    command: 'npx @rhl-ai/cli skill install code-reviewer --target ~/.claude/skills',
+    notes:
+      'Without --target the skill goes to ~/.agents/skills, for agents that read that shared folder. Point --target at any other agent’s skills directory.',
   },
   {
     number: '03',
-    title: 'Mount a skill to your coding assistant',
+    title: 'Use it from your agent',
     description:
-      'Install verified heuristics into your agent environment so your AI pair-programmer can execute strict code reviews and performance audits.',
-    command: 'pnpm rhl skill install code-reviewer',
-    notes: 'Installs declarative specifications into ~/.agents/skills/ for agent access.',
+      'Start a new Claude Code session in your project and call the skill by name, or just describe the task and let the agent pick the skill up automatically.',
+    command: `/code-reviewer
+/pr-description-writer
+/frontend-performance-engineer the product page is slow on mobile`,
+    notes:
+      'In other agents, name the skill in your prompt: “Use the code-reviewer skill to review my changes”.',
   },
   {
     number: '04',
-    title: 'Scaffold real-time WhatsApp alerts',
+    title: 'Scaffold a project',
     description:
-      'Bootstrap the production webhook notifier to receive instant WhatsApp notifications whenever pull requests are opened or reviewed.',
-    command: 'npx @rhl-ai/cli create whatsapp-bot my-bot',
-    notes:
-      'Same template as the standalone `npx create-github-whatsapp-notifier my-bot`. Configurable with Twilio credentials and username-to-phone mappings.',
+      'Generate a starter from the bundled templates: Next.js, React, Node, or the GitHub → WhatsApp notifier bot.',
+    command: `npx @rhl-ai/cli create
+npx @rhl-ai/cli create nextjs my-app
+npx @rhl-ai/cli create whatsapp-bot my-bot`,
+    notes: 'Running create without arguments lists every template.',
   },
 ];
 

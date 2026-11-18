@@ -3,12 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-} from 'motion/react';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react';
 import { siGithub } from 'simple-icons';
 import { Sun, Moon, Menu, X, ArrowUpRight } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
@@ -29,7 +24,12 @@ const NAV_ITEMS: NavItem[] = [
 
 const GITHUB_URL = 'https://github.com/imRahul05/rhl-ai';
 
-export function Header(): React.JSX.Element {
+interface HeaderProps {
+  /** Published @rhl-ai/cli version, read from its package.json at build time. */
+  readonly version: string;
+}
+
+export function Header({ version }: HeaderProps): React.JSX.Element {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
@@ -60,8 +60,7 @@ export function Header(): React.JSX.Element {
     return () => window.removeEventListener('keydown', onKey);
   }, [isMenuOpen]);
 
-  const activeHref =
-    NAV_ITEMS.find((item) => pathname?.startsWith(item.href))?.href ?? null;
+  const activeHref = NAV_ITEMS.find((item) => pathname?.startsWith(item.href))?.href ?? null;
   const pillHref = hovered ?? activeHref;
   const visible = !isHidden || isMenuOpen;
 
@@ -71,7 +70,7 @@ export function Header(): React.JSX.Element {
         'sticky top-0 z-50 w-full border-b transition-[background-color,border-color] duration-300',
         isScrolled || isMenuOpen
           ? 'border-border bg-background/85 backdrop-blur-md'
-          : 'border-transparent bg-transparent'
+          : 'border-transparent bg-transparent',
       )}
       initial={false}
       animate={{ y: visible ? 0 : '-100%' }}
@@ -87,11 +86,9 @@ export function Header(): React.JSX.Element {
             >
               &gt;_
             </span>
-            <span className="text-[15px] font-semibold tracking-tight text-foreground">
-              RHL AI
-            </span>
+            <span className="text-[15px] font-semibold tracking-tight text-foreground">RHL AI</span>
             <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
-              v0.1.0
+              v{version}
             </span>
           </Link>
 
@@ -112,9 +109,7 @@ export function Header(): React.JSX.Element {
                   onBlur={() => setHovered(null)}
                   className={cn(
                     'relative rounded-md px-3 py-1.5 text-[13px] transition-colors',
-                    isActive
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                    isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
                   )}
                 >
                   {pillHref === item.href ? (

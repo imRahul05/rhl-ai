@@ -26,16 +26,13 @@ const HEADLINE: string[][] = [
 
 export function Hero({ skillSource, facts }: HeroProps): React.JSX.Element {
   const lineOffsets = HEADLINE.map((_, i) =>
-    HEADLINE.slice(0, i).reduce((sum, l) => sum + l.length, 0)
+    HEADLINE.slice(0, i).reduce((sum, l) => sum + l.length, 0),
   );
 
   return (
     <section className="relative -mt-14 overflow-hidden border-b border-border pt-14">
       {/* Backdrop: the real code-reviewer SKILL.md on a character grid. */}
-      <div
-        className="pointer-events-none absolute inset-0 hero-mask"
-        aria-hidden="true"
-      >
+      <div className="pointer-events-none absolute inset-0 hero-mask" aria-hidden="true">
         <GlyphFieldLazy text={skillSource} />
       </div>
 
@@ -83,9 +80,10 @@ export function Hero({ skillSource, facts }: HeroProps): React.JSX.Element {
             <p className="enter max-w-md text-base leading-relaxed text-muted-foreground [--d:420ms] sm:text-lg">
               RHL AI packages engineering judgment as{' '}
               <code className="font-mono text-[0.92em] text-foreground">SKILL.md</code> files — and
-              ships a CLI that validates and installs them into{' '}
-              <code className="font-mono text-[0.92em] text-foreground">~/.agents/skills</code>,
-              where your coding agent reads them.
+              ships a CLI that installs them into{' '}
+              <code className="font-mono text-[0.92em] text-foreground">~/.claude/skills</code>,
+              where Claude Code picks them up as slash commands like{' '}
+              <code className="font-mono text-[0.92em] text-foreground">/code-reviewer</code>.
             </p>
 
             <div className="enter mt-8 flex flex-wrap items-center gap-3 [--d:520ms]">
