@@ -1,0 +1,36 @@
+{
+  "name": "@rhl-ai/skill-pr-description-writer",
+  "version": "1.0.0",
+  "description": "Agent skill for rigorous, reviewer-friendly pull request descriptions with real verification and annotated visual evidence",
+  "type": "module",
+  "main": "./SKILL.md",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "examples",
+    "references",
+    "scripts"
+  ],
+  "scripts": {
+    "validate": "bash ./scripts/validate.sh"
+  },
+  "keywords": [
+    "rhl-ai",
+    "ai-skill",
+    "agent-skill",
+    "pull-request",
+    "pr-description",
+    "code-review",
+    "playwright"
+  ],
+  "author": "Rahul Kumar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imRahul05/rhl-ai.git",
+    "directory": "skills/pr-description-writer"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
