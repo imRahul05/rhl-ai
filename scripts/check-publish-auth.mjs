@@ -109,6 +109,58 @@ if (registry.replace(/\/?$/, '/') !== EXPECTED_REGISTRY) {
   errors.push(`Registry is ${registry}; expected ${EXPECTED_REGISTRY}.`);
 }
 
+// 6. Probe the trusted-publisher exchange for every package that is about to be
+// published. npm performs this same exchange during `npm publish` but only logs
+// failures at verbose level and then reports a generic ENEEDAUTH, so surface the
+// registry's real reason here. The exchanged token is discarded, never printed.
+if (hasOidc && !errors.length) {
+  const idRes = await fetch(
+    `${process.env.ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${encodeURIComponent('npm:registry.npmjs.org')}`,
+    { headers: { Authorization: `Bearer ${process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}` } },
+  );
+  const idToken = idRes.ok ? (await idRes.json()).value : undefined;
+  if (!idToken) {
+    errors.push(`Could not obtain a GitHub OIDC id_token (HTTP ${idRes.status}).`);
+  } else {
+    // Non-secret claims, to compare with each package's Trusted Publisher settings on npmjs.com.
+    const claims = JSON.parse(Buffer.from(idToken.split('.')[1], 'base64url').toString('utf8'));
+    info(
+      `OIDC claims: repository=${claims.repository} workflow_ref=${claims.workflow_ref} ` +
+        `environment=${claims.environment ?? '(none)'}`,
+    );
+    const workspace = JSON.parse(
+      execFileSync('pnpm', ['ls', '-r', '--depth', '-1', '--json'], { encoding: 'utf8' }),
+    );
+    for (const entry of workspace) {
+      const pkg = JSON.parse(fs.readFileSync(path.join(entry.path, 'package.json'), 'utf8'));
+      if (pkg.private || !pkg.name) continue;
+      const meta = await fetch(`${EXPECTED_REGISTRY}${pkg.name.replace('/', '%2f')}`);
+      if (meta.status === 404) {
+        errors.push(
+          `${pkg.name}: not on npm yet. Publish it once manually from its folder (npm publish --access public), then add its Trusted Publisher.`,
+        );
+        continue;
+      }
+      const versions = meta.ok ? Object.keys((await meta.json()).versions ?? {}) : [];
+      if (versions.includes(pkg.version)) continue; // nothing to publish for this package
+      const ex = await fetch(
+        `${EXPECTED_REGISTRY}-/npm/v1/oidc/token/exchange/package/${pkg.name.replace('/', '%2f')}`,
+        { method: 'POST', headers: { Authorization: `Bearer ${idToken}` } },
+      );
+      const body = await ex.json().catch(() => ({}));
+      if (ex.ok && body.token) {
+        info(`${pkg.name}@${pkg.version}: trusted publisher OK`);
+      } else {
+        errors.push(
+          `${pkg.name}: trusted-publisher exchange rejected (HTTP ${ex.status}: ${body.message ?? body.error ?? 'no message'}). ` +
+            'On npmjs.com > package Settings > Trusted Publisher check: GitHub Actions, owner imRahul05, ' +
+            'repository rhl-ai, workflow filename release.yml, no environment, allowed action includes npm publish.',
+        );
+      }
+    }
+  }
+}
+
 if (errors.length) {
   console.error('\nPre-flight failed:');
   for (const e of errors) console.error(`  - ${e}`);
