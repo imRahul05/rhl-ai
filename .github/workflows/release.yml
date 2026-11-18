@@ -69,11 +69,13 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          # No registry-url: it makes setup-node write an .npmrc with
+          # `_authToken=${NODE_AUTH_TOKEN}`, and npm falls back to that token
+          # whenever the OIDC exchange fails (-> EOTP). npmjs.org is the default.
 
-      # Trusted publishing requires npm >= 11.5.1
-      - name: Update npm
-        run: npm install -g npm@latest
+      # Trusted publishing requires npm >= 11.5.1. Pinned for reproducible releases.
+      - name: Install npm for trusted publishing
+        run: npm install -g npm@11.21.3
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -91,11 +93,12 @@ jobs:
         uses: changesets/action@v1
         with:
           version: pnpm version-packages
-          publish: pnpm release
+          # release:ci = pre-flight auth check (scripts/check-publish-auth.mjs) + pnpm release
+          publish: pnpm release:ci
           title: 'chore: version and publish packages'
           commit: 'chore: version and publish packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
-          # Optional fallback when Trusted Publishing is not configured (e.g. first publish).
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Intentionally no NPM_TOKEN / NODE_AUTH_TOKEN: publishing uses npm Trusted
+          # Publishing (OIDC via `id-token: write`) only.

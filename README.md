@@ -211,18 +211,32 @@ pnpm release
 Publishing to the public npm registry (`registry.npmjs.org`) is automatic and driven by `.github/workflows/release.yml`:
 
 1. On every push to `main`, the `validate` job runs build, lint, typecheck and test. The `release` job only runs if it passes.
-2. `scripts/auto-changeset.mjs` finds publishable workspace packages (`packages/*`, `skills/*`, `projects/*`; anything not `private`) whose files changed since the previous push, and writes a `patch` changeset (`.changeset/auto-<sha>-<pkg>.md`) for each, using commit subjects as the summary. Changes to only `CHANGELOG.md` or `package.json` version lines are ignored, packages with a pending changeset are skipped, and the release commit itself never triggers it. The workflow commits these files to `main`.
+2. `scripts/auto-changeset.mjs` finds publishable workspace packages (`packages/*`, `skills/*`, `projects/*`; anything not `private`) with changes since the last commit that bumped their `version` (their last release), and writes a `patch` changeset (`.changeset/auto-<sha>-<pkg>.md`) for each, using commit subjects as the summary. Changes to only `CHANGELOG.md` or `package.json` version lines are ignored, packages with a pending changeset are skipped, and the release commit itself never triggers it. The files are left uncommitted and land in the Version Packages PR.
 3. `changesets/action` opens or updates a **Version Packages** PR (bumps versions, updates changelogs and dependents). Merging it publishes only the packages whose version is not yet on npm, with provenance.
 
 Need a `minor` or `major` bump? Run `pnpm changeset` in your PR and select the bump; an existing changeset for a package stops the automatic patch one. Preview the automatic step locally with `node scripts/auto-changeset.mjs --base <sha> --dry-run`.
 
+### Monorepo root vs. workspace packages
+
+The repository root (`rhl-ai-monorepo`) is only the workspace container. It is `"private": true` on purpose and is **never published**: Changesets does not treat the root as a release target, and its `prepublishOnly` hook (`scripts/guard-root-publish.mjs`) makes an accidental `npm publish` / `pnpm publish` from the root fail with instructions instead of a bare `EPRIVATE`.
+
+What gets published are the individual, non-private workspace packages:
+
+| You want to…                                     | Do this                                                                                                                                                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Release changes (normal flow)                    | Merge your PR, then merge the **Version Packages** PR. CI runs `pnpm release:ci`.                                                                                                     |
+| Release locally (maintainers, rarely)            | `pnpm release` from the root. It builds, runs `scripts/check-publishable-packages.mjs`, then `changeset publish`, which publishes each workspace package whose version is not on npm. |
+| Publish one brand-new package for the first time | `cd skills/<name>` (or `packages/<name>`, `projects/<name>`) and run `npm publish --access public` with your 2FA. Never run it from the root.                                         |
+
+`scripts/check-publishable-packages.mjs` (part of `pnpm release`) fails the release if the root is not private, or if any publishable package lacks a valid name/version, `publishConfig.access: public` (scoped), repository metadata pointing at this repo and its directory, or its built entry points in the packed tarball. It only uses `npm pack --dry-run`. Private workspaces (e.g. `apps/landing-page`) are also excluded from versioning and tagging via `privatePackages` in `.changeset/config.json`.
+
 ### One-time setup
 
 - Create the `@rhl-ai` organization on npmjs.com (unscoped `create-github-whatsapp-notifier` needs no org).
-- For each package, on npmjs.com go to Settings, Trusted Publisher, and add GitHub Actions with repository `imRahul05/rhl-ai` and workflow `release.yml`.
-- Alternative or fallback: add an npm automation token as the `NPM_TOKEN` repository secret.
-- Trusted publishers are configured per existing package, so the **first publish of a brand-new package** needs `NPM_TOKEN`; configure its Trusted Publisher afterwards.
-- If `main` is branch-protected, allow GitHub Actions to push (for the automatic changeset commit) and to create PRs.
+- Publishing uses **npm Trusted Publishing (OIDC) only**. The release job has `id-token: write` and injects no npm token; `scripts/check-publish-auth.mjs` runs before `changeset publish` and fails if a legacy credential (`NPM_TOKEN`, `NODE_AUTH_TOKEN`, an `_authToken` in an `.npmrc`) is present.
+- For each package, on npmjs.com go to Settings, Trusted Publisher, add GitHub Actions with owner `imRahul05`, repository `rhl-ai`, workflow filename `release.yml`, and make sure **`npm publish`** is an allowed action (newer configurations allow only staged publishing by default).
+- A trusted publisher can only be added to a package that already exists. Bootstrap a **brand-new package** once by publishing it manually with your 2FA (`npm publish --access public` from its directory), then add its Trusted Publisher; later releases are automatic.
+- In repo Settings → Actions → General, enable "Allow GitHub Actions to create and approve pull requests" (needed for the Version Packages PR).
 
 ---
 
