@@ -29,6 +29,7 @@ const COLUMNS: FooterColumn[] = [
       { label: 'Skills Catalog', href: '/skills' },
       { label: 'Code Reviewer', href: '/skills/code-reviewer' },
       { label: 'Frontend Performance', href: '/skills/frontend-performance-engineer' },
+      { label: 'PR Description Writer', href: '/skills/pr-description-writer' },
       { label: 'Directives', href: '/directives' },
       { label: 'Architecture', href: '/architecture' },
     ],

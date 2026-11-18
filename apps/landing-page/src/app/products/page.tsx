@@ -45,7 +45,7 @@ const PRODUCTS: ProductItem[] = [
     packageScope: '@rhl-ai/skills',
     category: 'BEHAVIORAL INTELLIGENCE',
     version: 'v1.0.0',
-    status: '2 Verified Skills',
+    status: '3 Verified Skills',
     headline: 'Reusable behavioral intelligence and decision heuristics for coding agents.',
     description:
       'A library of structured skills that teach coding assistants how to review code, diagnose performance bottlenecks, and enforce architectural boundaries without adding runtime overhead.',

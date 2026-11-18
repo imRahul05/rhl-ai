@@ -43,12 +43,14 @@ const STAGES: Stage[] = [
     lines: [
       { kind: 'cmd', text: 'rhl skill list' },
       { kind: 'gap', text: '' },
-      { kind: 'bold', text: 'Available AI Agent Skills (2):' },
+      { kind: 'bold', text: 'Available AI Agent Skills (3):' },
       { kind: 'gap', text: '' },
       { kind: 'plain', text: '• code-reviewer v1.0.0 by RHL AI' },
       { kind: 'dim', text: '  Files: 1 references, 1 examples, 1 scripts' },
       { kind: 'plain', text: '• frontend-performance-engineer' },
       { kind: 'dim', text: '  Files: 1 references, 1 examples, 1 scripts' },
+      { kind: 'plain', text: '• pr-description-writer' },
+      { kind: 'dim', text: '  Files: 2 references, 2 examples, 1 scripts' },
     ],
   },
   {

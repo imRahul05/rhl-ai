@@ -28,7 +28,8 @@
 rhl-ai/
 ├── skills/                      # AI Agent skills & prompt engineering artifacts
 │   ├── README.md
-│   └── code-reviewer/           # Reference code review agent skill
+│   ├── code-reviewer/           # Reference code review agent skill
+│   └── pr-description-writer/   # PR description + verification + visual evidence skill
 │       ├── SKILL.md
 │       ├── references/
 │       ├── examples/
