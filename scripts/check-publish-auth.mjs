@@ -20,6 +20,7 @@ const MIN_NODE = [22, 14, 0];
 const EXPECTED_REGISTRY = 'https://registry.npmjs.org/';
 
 const errors = [];
+const warnings = [];
 const info = (msg) => console.log(`  ${msg}`);
 
 const parse = (v) =>
@@ -145,13 +146,23 @@ if (hasOidc && !errors.length) {
       if (versions.includes(pkg.version)) continue; // nothing to publish for this package
       const ex = await fetch(
         `${EXPECTED_REGISTRY}-/npm/v1/oidc/token/exchange/package/${pkg.name.replace('/', '%2f')}`,
-        { method: 'POST', headers: { Authorization: `Bearer ${idToken}` } },
+        {
+          method: 'POST',
+          // Same headers npm-registry-fetch sends during `npm publish`.
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+            'npm-command': 'publish',
+            'user-agent': `npm/${npmVersion} node/${process.version} ${process.platform} ${process.arch}`,
+          },
+        },
       );
       const body = await ex.json().catch(() => ({}));
       if (ex.ok && body.token) {
         info(`${pkg.name}@${pkg.version}: trusted publisher OK`);
       } else {
-        errors.push(
+        // Advisory only: the real `npm publish` makes the final decision, so a probe
+        // that disagrees with npm must never block a release.
+        warnings.push(
           `${pkg.name}: trusted-publisher exchange rejected (HTTP ${ex.status}: ${body.message ?? body.error ?? 'no message'}). ` +
             'On npmjs.com > package Settings > Trusted Publisher check: GitHub Actions, owner imRahul05, ' +
             'repository rhl-ai, workflow filename release.yml, no environment, allowed action includes npm publish.',
@@ -159,6 +170,11 @@ if (hasOidc && !errors.length) {
       }
     }
   }
+}
+
+if (warnings.length) {
+  console.warn('\nTrusted-publisher probe warnings (publish will still be attempted):');
+  for (const w of warnings) console.warn(`  - ${w}`);
 }
 
 if (errors.length) {
