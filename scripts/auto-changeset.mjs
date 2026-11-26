@@ -3,14 +3,18 @@
  * Automatically create `patch` changesets for publishable workspace packages
  * with unreleased changes. Run in CI before `changesets/action`.
  *
- * Usage: node scripts/auto-changeset.mjs [--base <sha>] [--head <sha>] [--dry-run]
+ * Usage: node scripts/auto-changeset.mjs [--base <sha>] [--head <sha>] [--dry-run] [--explain]
  *
  * - per package, diffs from the last commit that changed its "version" line
  *   (its last release, or its creation) to HEAD; --base overrides this
  * - files are written but NOT committed: changesets/action resets to the pushed
  *   sha before versioning, and untracked files survive that reset
  * - private packages are ignored
- * - changes only to CHANGELOG.md, or to package.json "version" lines, are ignored
+ * - cosmetic changes never trigger a release (see isCosmetic): CHANGELOG.md,
+ *   README.md, tests, lint/git config, whitespace-only edits, and package.json
+ *   "version"-only edits — anywhere, including bundled dirs such as skills/.
+ *   To ship a docs-only change to npm anyway, add a changeset by hand
+ *   (`pnpm changeset`).
  * - packages that already have a pending changeset are skipped
  * - never runs on the release ("chore: version and publish packages") commit
  */
@@ -113,20 +117,45 @@ function releaseBase(pkgDir) {
   );
 }
 
-function isRelevant(pkgDir, file, base) {
-  if (!file.startsWith(`${pkgDir}/`)) return true; // bundled source outside the package dir
-  const rel = file.slice(pkgDir.length + 1);
-  if (rel === 'CHANGELOG.md') return false;
-  if (rel === 'package.json') {
-    // Ignore version-only edits (e.g. from the release PR).
-    const diff = git('diff', '-U0', `${base}..${head}`, '--', file);
-    const changed = diff
-      .split('\n')
-      .filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l))
-      .filter((l) => !/^[+-]\s*"version"\s*:/.test(l));
-    return changed.length > 0;
+// Files that never ship behaviour: changing only these is not worth a release.
+const COSMETIC_FILES = [
+  /(^|\/)CHANGELOG\.md$/,
+  /(^|\/)README\.md$/,
+  /(^|\/)(tests?|__tests__)\//,
+  /\.(test|spec)\.[cm]?[jt]sx?$/,
+  /(^|\/)\.gitignore$/,
+  /(^|\/)(eslint|vitest|jest)\.config\.[cm]?[jt]s$/,
+];
+
+/** True when the file's diff is empty once whitespace and blank lines are ignored. */
+function isWhitespaceOnly(file, base) {
+  try {
+    execFileSync(
+      'git',
+      ['diff', '--quiet', '-w', '--ignore-blank-lines', `${base}..${head}`, '--', file],
+      { stdio: 'ignore' },
+    );
+    return true; // exit 0: no real difference
+  } catch {
+    return false; // exit 1: real difference (or the file is new/removed)
   }
-  return true;
+}
+
+/** True for package.json edits that only touch the "version" line (e.g. a release PR). */
+function isVersionOnly(file, base) {
+  if (!/(^|\/)package\.json$/.test(file)) return false;
+  const diff = git('diff', '-U0', `${base}..${head}`, '--', file);
+  return diff
+    .split('\n')
+    .filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l))
+    .every((l) => /^[+-]\s*"version"\s*:/.test(l));
+}
+
+/** Whether a changed file is cosmetic (`--explain` prints the verdict per file). */
+function isCosmetic(file, base) {
+  if (COSMETIC_FILES.some((re) => re.test(file))) return true;
+  if (isVersionOnly(file, base)) return true;
+  return isWhitespaceOnly(file, base);
 }
 
 const created = [];
@@ -136,7 +165,12 @@ for (const pkg of packages) {
   const files = git('diff', '--name-only', `${base}..${head}`, '--', ...pkg.paths)
     .split('\n')
     .filter(Boolean);
-  if (!files.some((f) => isRelevant(pkg.dir, f, base))) continue;
+  const relevant = files.filter((f) => !isCosmetic(f, base));
+  if (flag('--explain')) {
+    for (const f of files)
+      console.log(`${pkg.name}: ${relevant.includes(f) ? 'RELEASE ' : 'cosmetic'} ${f}`);
+  }
+  if (!relevant.length) continue;
   if (covered.has(pkg.name)) {
     console.log(`${pkg.name}: changed, but a changeset already exists; skipping.`);
     continue;
