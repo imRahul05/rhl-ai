@@ -13,7 +13,8 @@ export interface RepoFacts {
   readonly templates: readonly TemplateEntry[];
 }
 
-function findRepoRoot(): string {
+/** Monorepo root (the folder holding pnpm-workspace.yaml). */
+export function findRepoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 5; i += 1) {
     if (fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'))) return dir;

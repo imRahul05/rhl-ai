@@ -27,6 +27,15 @@ export const metadata: Metadata = {
     'TypeScript',
   ],
   authors: [{ name: 'Rahul Kumar', url: 'https://github.com/imRahul05' }],
+  // Machine-readable versions of the whole site, for LLMs and coding agents.
+  alternates: {
+    types: {
+      'text/plain': [
+        { url: '/llms.txt', title: 'llms.txt' },
+        { url: '/llms-full.txt', title: 'llms-full.txt' },
+      ],
+    },
+  },
 };
 
 export const viewport: Viewport = {

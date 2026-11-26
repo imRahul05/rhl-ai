@@ -9,7 +9,7 @@ import {
   useTransform,
 } from 'motion/react';
 import { useMediaQuery, usePrefersReducedMotion } from '@/components/motion/use-media-query';
-import { FileText } from 'lucide-react';
+import { IsoTrack, stationPercent } from './iso-track';
 import { cn } from '@/lib/utils';
 
 type LineKind = 'cmd' | 'info' | 'ok' | 'plain' | 'dim' | 'bold' | 'add' | 'del' | 'gap';
@@ -113,8 +113,6 @@ const STAGES: Stage[] = [
     footnote: 'From skills/code-reviewer/examples/review-sample.md',
   },
 ];
-
-const LAST = STAGES.length - 1;
 
 function Line({ line }: { line: PanelLine }): React.JSX.Element {
   switch (line.kind) {
@@ -269,9 +267,6 @@ function PinnedPipeline(): React.JSX.Element {
     [0, 0.16, 0.3, 0.42, 0.56, 0.68, 0.82, 1],
     [0, 0, 1 / 3, 1 / 3, 2 / 3, 2 / 3, 1, 1],
   );
-  const tokenLeft = useTransform(travel, (v) => `${v * 100}%`);
-  // Slide the chip across its own width so it never overhangs either end.
-  const tokenShift = useTransform(travel, (v) => `${-v * 100}%`);
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     const next = latest < 0.23 ? 0 : latest < 0.49 ? 1 : latest < 0.75 ? 2 : 3;
@@ -354,54 +349,18 @@ function PinnedPipeline(): React.JSX.Element {
 
               {/* Stage */}
               <div className="flex min-w-0 flex-col max-lg:min-h-0 max-lg:flex-1 lg:col-span-8">
-                {/* Track */}
-                <div className="px-3">
-                  <div className="relative h-12">
-                    <div className="absolute inset-x-0 top-8 h-px bg-border" />
-                    <motion.div
-                      className="absolute inset-x-0 top-8 h-px origin-left bg-primary"
-                      style={{ scaleX: travel }}
-                    />
+                {/* Track: an isometric diorama the SKILL.md block rides across. */}
+                <div>
+                  <IsoTrack travel={travel} activeIndex={activeIndex} />
+                  <div className="relative mt-1 h-4 font-mono text-[10px] text-muted-foreground sm:text-[11px]">
                     {STAGES.map((s, index) => (
                       <span
                         key={s.id}
                         className={cn(
-                          'absolute top-8 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-colors duration-300',
-                          index <= activeIndex
-                            ? 'border-primary bg-primary'
-                            : 'border-border bg-background',
-                        )}
-                        style={{ left: `${(index / LAST) * 100}%` }}
-                      />
-                    ))}
-                    <motion.div
-                      className="absolute top-0"
-                      style={{ left: tokenLeft, x: tokenShift }}
-                    >
-                      <div className="flex items-center gap-1 rounded-[4px] border border-primary bg-background px-1.5 py-0.5 font-mono text-[10px] text-foreground shadow-[0_0_24px_-4px_hsl(var(--primary)/0.6)]">
-                        <FileText className="size-3 text-primary" />
-                        SKILL.md
-                      </div>
-                    </motion.div>
-                  </div>
-                  <div className="relative mt-2 h-4 font-mono text-[10px] text-muted-foreground sm:text-[11px]">
-                    {STAGES.map((s, index) => (
-                      <span
-                        key={s.id}
-                        className={cn(
-                          'absolute whitespace-nowrap transition-colors duration-300',
-                          index === 0
-                            ? '-left-3'
-                            : index === LAST
-                              ? '-right-3'
-                              : '-translate-x-1/2',
+                          'absolute -translate-x-1/2 whitespace-nowrap transition-colors duration-300',
                           index === activeIndex && 'text-foreground',
                         )}
-                        style={
-                          index === 0 || index === LAST
-                            ? undefined
-                            : { left: `${(index / LAST) * 100}%` }
-                        }
+                        style={{ left: `${stationPercent(index)}%` }}
                       >
                         {s.stop}
                       </span>

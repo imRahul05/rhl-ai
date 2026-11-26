@@ -321,6 +321,165 @@ h3 {
   paint-order: stroke fill;
 }
 
+/* ───────────────────────── Isometric ───────────────────────── */
+/* Every iso drawing is orthographic (no perspective) and takes its colours
+   from the theme tokens, so it re-themes with the rest of the page. */
+
+@property --depth {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 14px;
+}
+
+.iso-box polygon {
+  stroke: hsl(var(--foreground) / 0.3);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill 0.35s ease, stroke 0.35s ease;
+}
+.iso-paper .iso-face-top {
+  fill: hsl(var(--card));
+}
+.iso-paper .iso-face-left {
+  fill: color-mix(in oklab, hsl(var(--card)), hsl(var(--foreground)) 8%);
+}
+.iso-paper .iso-face-right {
+  fill: color-mix(in oklab, hsl(var(--card)), hsl(var(--foreground)) 16%);
+}
+.iso-signal polygon {
+  stroke: color-mix(in oklab, hsl(var(--primary)), black 35%);
+}
+.iso-signal .iso-face-top {
+  fill: hsl(var(--primary));
+}
+.iso-signal .iso-face-left {
+  fill: color-mix(in oklab, hsl(var(--primary)), black 22%);
+}
+.iso-signal .iso-face-right {
+  fill: color-mix(in oklab, hsl(var(--primary)), black 40%);
+}
+.iso-ink polygon {
+  stroke: hsl(var(--foreground));
+}
+.iso-ink .iso-face-top {
+  fill: hsl(var(--foreground));
+}
+.iso-ink .iso-face-left {
+  fill: color-mix(in oklab, hsl(var(--foreground)), hsl(var(--background)) 30%);
+}
+.iso-ink .iso-face-right {
+  fill: color-mix(in oklab, hsl(var(--foreground)), hsl(var(--background)) 50%);
+}
+.iso-ghost polygon {
+  fill: hsl(var(--background) / 0.75);
+  stroke: hsl(var(--foreground) / 0.28);
+  stroke-dasharray: 3 3;
+}
+/* Text drawn onto a face. */
+.iso-label {
+  font-family: var(--font-mono);
+  fill: hsl(var(--muted-foreground));
+}
+.iso-signal .iso-label,
+.iso-label-on-signal {
+  fill: hsl(var(--primary-foreground));
+}
+.iso-ink .iso-label {
+  fill: hsl(var(--background));
+}
+
+/* Isometric floor grid as a background (a 30° rhombus lattice). */
+.iso-grid {
+  background-color: hsl(var(--border));
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='30'><path d='M0 15 26 0 52 15 26 30Z' fill='none' stroke='black' stroke-width='1'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='30'><path d='M0 15 26 0 52 15 26 30Z' fill='none' stroke='black' stroke-width='1'/></svg>");
+  -webkit-mask-size: 52px 30px;
+  mask-size: 52px 30px;
+}
+
+/*
+ * A front-facing card extruded into an isometric slab: the right and bottom
+ * walls run off at 30°, so the face stays flat and its text stays crisp.
+ * Depth is a registered property, so it can transition.
+ */
+.iso-slab {
+  position: relative;
+  transition: --depth 0.5s var(--ease-out-expo), translate 0.5s var(--ease-out-expo);
+}
+.iso-slab::before,
+.iso-slab::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid hsl(var(--border));
+}
+/* Right wall: width = depth·cos30, sheared down by 30°. */
+.iso-slab::after {
+  top: 0;
+  left: 100%;
+  height: 100%;
+  width: calc(var(--depth) * 0.866);
+  transform-origin: 0 0;
+  transform: skewY(30deg);
+  margin-left: -1px;
+  background: color-mix(in oklab, hsl(var(--card)), hsl(var(--foreground)) 16%);
+  border-left: 0;
+  border-top-right-radius: 3px;
+}
+/* Bottom wall: height = depth·sin30, sheared right by 60°. */
+.iso-slab::before {
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: calc(var(--depth) * 0.5);
+  transform-origin: 0 0;
+  transform: skewX(60deg);
+  margin-top: -1px;
+  background: color-mix(in oklab, hsl(var(--card)), hsl(var(--foreground)) 8%);
+  border-top: 0;
+  border-bottom-left-radius: 3px;
+}
+/* Hard isometric shadow cast down-right onto the floor. */
+.iso-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: hsl(var(--foreground) / 0.07);
+  translate: calc(var(--depth) * 0.866 + 14px) calc(var(--depth) * 0.5 + 10px);
+  filter: blur(14px);
+  transition: translate 0.5s var(--ease-out-expo);
+}
+
+@keyframes iso-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+@keyframes iso-drop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -64px, 0);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.iso-bob {
+  animation: iso-bob 4.8s ease-in-out infinite;
+  animation-delay: var(--d, 0ms);
+}
+
 /* ───────────────────────── Motion ───────────────────────── */
 
 @keyframes caret-blink {

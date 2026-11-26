@@ -6,7 +6,7 @@ import { ProductBento } from '@/components/home/product-bento';
 import { CommandMarquee } from '@/components/home/command-marquee';
 import { Principles } from '@/components/home/principles';
 import { FinalCta } from '@/components/home/final-cta';
-import { getAllSkills, getSkillSource } from '@/lib/skills';
+import { getAllSkills } from '@/lib/skills';
 import { getRepoFacts } from '@/lib/repo';
 
 const MARQUEE_COMMANDS: string[] = [
@@ -47,13 +47,13 @@ export default function HomePage(): React.JSX.Element {
 
   return (
     <main id="main" className="flex-1">
-      <Hero skillSource={getSkillSource('code-reviewer')} facts={facts} />
+      <Hero facts={facts} />
       <SkillAnatomy />
       <Pipeline />
       <ProductBento skills={skills} templates={repo.templates} />
       <CommandMarquee commands={MARQUEE_COMMANDS} tags={tags} />
       <Principles />
-      <FinalCta />
+      <FinalCta skills={skills.map((s) => s.slug)} />
     </main>
   );
 }

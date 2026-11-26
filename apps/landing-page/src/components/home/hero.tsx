@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { CopyCommand } from '@/components/copy-command';
 import { Magnetic } from '@/components/motion/magnetic';
 import { ScrambleNumber } from '@/components/motion/scramble-number';
-import { GlyphFieldLazy } from './glyph-field-lazy';
+import { IsoFieldLazy } from './iso-field-lazy';
 import { HeroTerminal } from './hero-terminal';
 
 export interface HeroFact {
@@ -14,8 +14,6 @@ export interface HeroFact {
 }
 
 export interface HeroProps {
-  /** Raw SKILL.md printed on the backdrop grid. */
-  skillSource: string;
   facts: HeroFact[];
 }
 
@@ -24,16 +22,16 @@ const HEADLINE: string[][] = [
   ['Write', 'them', 'once.'],
 ];
 
-export function Hero({ skillSource, facts }: HeroProps): React.JSX.Element {
+export function Hero({ facts }: HeroProps): React.JSX.Element {
   const lineOffsets = HEADLINE.map((_, i) =>
     HEADLINE.slice(0, i).reduce((sum, l) => sum + l.length, 0),
   );
 
   return (
     <section className="relative -mt-14 overflow-hidden border-b border-border pt-14">
-      {/* Backdrop: the real code-reviewer SKILL.md on a character grid. */}
+      {/* Backdrop: an isometric workbench whose cells rise into blocks. */}
       <div className="pointer-events-none absolute inset-0 hero-mask" aria-hidden="true">
-        <GlyphFieldLazy text={skillSource} />
+        <IsoFieldLazy />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 sm:px-6 sm:pt-20 lg:pb-24">

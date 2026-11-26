@@ -90,46 +90,63 @@ function Plate({ layer, index, active, gap }: PlateProps): React.JSX.Element {
   React.useEffect(() => {
     lift.set(active ? 14 : 0);
   }, [active, lift]);
-  const z = useTransform<number, number>(
-    [gap, lift],
-    ([g, l]) => offset * (g ?? 0) + (l ?? 0)
-  );
+  const z = useTransform<number, number>([gap, lift], ([g, l]) => offset * (g ?? 0) + (l ?? 0));
   const smoothZ = useSpring(z, { stiffness: 160, damping: 22 });
 
   return (
-    <motion.div
-      style={{ z: smoothZ }}
-      className={cn(
-        'absolute inset-0 overflow-hidden rounded-md border bg-card shadow-[0_0_0_1px_hsl(var(--background))] transition-colors duration-300',
-        active ? 'border-primary' : 'border-border'
-      )}
-    >
+    <motion.div style={{ z: smoothZ }} className="preserve-3d absolute inset-0">
+      {/* Plate thickness: the two walls that face the viewer at this angle. */}
+      <span
+        className={cn(
+          'absolute left-0 top-full h-[7px] w-full origin-top [transform:rotateX(-90deg)] border transition-colors duration-300',
+          active
+            ? 'border-primary bg-[color-mix(in_oklab,hsl(var(--primary)),black_30%)]'
+            : 'border-border bg-[color-mix(in_oklab,hsl(var(--card)),hsl(var(--foreground))_9%)]',
+        )}
+      />
+      <span
+        className={cn(
+          'absolute right-full top-0 h-full w-[7px] origin-right [transform:rotateY(-90deg)] border transition-colors duration-300',
+          active
+            ? 'border-primary bg-[color-mix(in_oklab,hsl(var(--primary)),black_45%)]'
+            : 'border-border bg-[color-mix(in_oklab,hsl(var(--card)),hsl(var(--foreground))_17%)]',
+        )}
+      />
       <div
         className={cn(
-          'flex items-center justify-between border-b px-3 py-1.5 font-mono text-[10px] transition-colors duration-300',
-          active
-            ? 'border-primary/50 bg-primary text-primary-foreground'
-            : 'border-border text-muted-foreground'
+          'absolute inset-0 overflow-hidden rounded-[3px] border bg-card transition-colors duration-300',
+          active ? 'border-primary' : 'border-border',
         )}
       >
-        <span>{layer.path}</span>
-        <span>0{index + 1}</span>
-      </div>
-      <div className="space-y-[3px] px-3 py-2.5 font-mono text-[8.5px] leading-[1.45] text-muted-foreground sm:text-[10px] lg:text-[11.5px]">
-        {layer.sample.map((line) => (
-          <div key={line} className="truncate">
-            {line}
-          </div>
-        ))}
+        <div
+          className={cn(
+            'flex items-center justify-between border-b px-3 py-1.5 font-mono text-[10px] transition-colors duration-300',
+            active
+              ? 'border-primary/50 bg-primary text-primary-foreground'
+              : 'border-border text-muted-foreground',
+          )}
+        >
+          <span>{layer.path}</span>
+          <span>0{index + 1}</span>
+        </div>
+        <div className="space-y-[3px] px-3 py-2.5 font-mono text-[8.5px] leading-[1.45] text-muted-foreground sm:text-[10px] lg:text-[11.5px]">
+          {layer.sample.map((line) => (
+            <div key={line} className="truncate">
+              {line}
+            </div>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
 }
 
 /**
- * "A skill is a folder": an exploded isometric view built with CSS 3D
- * transforms. Scroll position pulls the four layers apart; a fine pointer
- * rotates the stack; the legend (hover, focus or tap) lifts a layer.
+ * "A skill is a folder": an exploded view in true isometric projection
+ * (orthographic, rotateX 54.74° · rotateZ -45°) built with CSS 3D transforms.
+ * Scroll position pulls the four plates apart; a fine pointer turns the stack
+ * a few degrees about its vertical axis; the legend (hover, focus or tap)
+ * lifts a plate.
  */
 export function SkillAnatomy(): React.JSX.Element {
   const reduce = usePrefersReducedMotion();
@@ -149,18 +166,19 @@ export function SkillAnatomy(): React.JSX.Element {
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     const next = Math.max(
       0,
-      Math.min(LAYERS.length - 1, Math.floor(((latest - 0.32) / 0.36) * LAYERS.length))
+      Math.min(LAYERS.length - 1, Math.floor(((latest - 0.32) / 0.36) * LAYERS.length)),
     );
     setScrollActive((prev) => (prev === next ? prev : next));
   });
 
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
-  const rotateZ = useSpring(useTransform(pointerX, [-0.5, 0.5], [-46, -30]), {
+  // True isometric rest pose; the pointer only swings it a few degrees.
+  const rotateZ = useSpring(useTransform(pointerX, [-0.5, 0.5], [-52, -38]), {
     stiffness: 90,
     damping: 18,
   });
-  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [62, 52]), {
+  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [57.5, 52]), {
     stiffness: 90,
     damping: 18,
   });
@@ -218,7 +236,7 @@ export function SkillAnatomy(): React.JSX.Element {
                     <span
                       className={cn(
                         'pt-0.5 font-mono text-[11px] transition-colors',
-                        isActive ? 'text-primary' : 'text-muted-foreground'
+                        isActive ? 'text-primary' : 'text-muted-foreground',
                       )}
                     >
                       0{index + 1}
@@ -228,7 +246,7 @@ export function SkillAnatomy(): React.JSX.Element {
                         <span
                           className={cn(
                             'font-mono text-[15px] transition-colors',
-                            isActive ? 'text-foreground' : 'text-muted-foreground'
+                            isActive ? 'text-foreground' : 'text-muted-foreground',
                           )}
                         >
                           {layer.path}
@@ -238,7 +256,7 @@ export function SkillAnatomy(): React.JSX.Element {
                       <span
                         className={cn(
                           'grid transition-[grid-template-rows,opacity] duration-500 ease-out',
-                          isActive ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                          isActive ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
                         )}
                       >
                         <span className="overflow-hidden">
@@ -258,11 +276,13 @@ export function SkillAnatomy(): React.JSX.Element {
         {/* The stack. Decorative: the legend carries the same information as text. */}
         <div
           aria-hidden="true"
-          className="relative flex h-[340px] items-center justify-center [perspective:1500px] sm:h-[460px] lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:h-auto lg:min-h-[600px]"
+          className="relative flex h-[340px] items-center justify-center sm:h-[460px] lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:h-auto lg:min-h-[600px]"
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
         >
-          <div className="rules pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(closest-side,black,transparent)]" />
+          <div className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(closest-side,black,transparent)]">
+            <div className="iso-grid size-full opacity-80" />
+          </div>
           <motion.div
             style={{ rotateX, rotateZ }}
             className="preserve-3d relative h-[150px] w-[220px] sm:h-[200px] sm:w-[300px] lg:h-[250px] lg:w-[380px]"
@@ -277,9 +297,7 @@ export function SkillAnatomy(): React.JSX.Element {
               />
             ))}
           </motion.div>
-          <p className="label absolute bottom-0 right-0 hidden sm:block">
-            skills/code-reviewer/
-          </p>
+          <p className="label absolute bottom-0 right-0 hidden sm:block">skills/code-reviewer/</p>
         </div>
       </div>
     </section>
