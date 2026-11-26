@@ -8,6 +8,8 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  type MotionStyle,
+  type MotionValue,
 } from 'motion/react';
 import { usePrefersReducedMotion } from '@/components/motion/use-media-query';
 import { RotateCcw } from 'lucide-react';
@@ -143,6 +145,9 @@ function buildFrames(session: Session): Frame[] {
 
 const HOLD_MS = 3400;
 
+/** Motion style plus the slab's `--depth` custom property. */
+type SlabStyle = MotionStyle & Record<'--depth', MotionValue<string>>;
+
 function lineClass(kind: LineKind): string {
   switch (kind) {
     case 'ok':
@@ -223,141 +228,138 @@ export function HeroTerminal(): React.JSX.Element {
     setFrameIndex(0);
   }
 
-  // Perspective: the window leans back at rest, squares up as you scroll past,
-  // and follows a fine pointer by a couple of degrees.
+  // Isometric slab: thick at rest, it settles toward the page as you scroll
+  // past, and lifts toward you (back edge fixed) under a fine pointer.
   const { scrollY } = useScroll();
-  const scrollTilt = useTransform(scrollY, [0, 520], [9, 0], { clamp: true });
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const springX = useSpring(pointerX, { stiffness: 120, damping: 18 });
-  const springY = useSpring(pointerY, { stiffness: 120, damping: 18 });
-  const rotateX = useTransform<number, number>([scrollTilt, springY], ([tilt, py]) =>
-    reduce ? 0 : (tilt ?? 0) - (py ?? 0) * 3,
+  const settle = useTransform(scrollY, [0, 520], [22, 12], { clamp: true });
+  const hover = useMotionValue(0);
+  const lift = useSpring(hover, { stiffness: 220, damping: 24 });
+  const depth = useTransform<number, string>([settle, lift], ([d, l]) =>
+    reduce ? '16px' : `${(d ?? 16) + (l ?? 0) * 10}px`,
   );
-  const rotateY = useTransform(springX, (px) => (reduce ? 0 : -5 + px * 4));
+  const liftX = useTransform(lift, (l) => (reduce ? 0 : -l * 10 * 0.866));
+  const liftY = useTransform(lift, (l) => (reduce ? 0 : -l * 10 * 0.5));
 
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>): void {
-    if (event.pointerType !== 'mouse') return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    pointerX.set((event.clientX - rect.left) / rect.width - 0.5);
-    pointerY.set((event.clientY - rect.top) / rect.height - 0.5);
+  const slabStyle: SlabStyle = { '--depth': depth, x: liftX, y: liftY };
+
+  function handlePointerEnter(event: React.PointerEvent<HTMLDivElement>): void {
+    if (event.pointerType === 'mouse') hover.set(1);
   }
 
   function handlePointerLeave(): void {
-    pointerX.set(0);
-    pointerY.set(0);
+    hover.set(0);
   }
 
   return (
     <div
       ref={rootRef}
-      className="[perspective:1600px]"
-      onPointerMove={handlePointerMove}
+      className="pb-3 pr-5"
+      onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
     >
-      <motion.div
-        style={{ rotateX, rotateY, transformOrigin: '50% 100%' }}
-        className="relative rounded-lg border border-border bg-card shadow-[0_40px_80px_-40px_rgb(0_0_0/0.55)] will-change-transform"
-      >
-        {/* Title bar */}
-        <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2">
-          <div
-            role="tablist"
-            aria-label="CLI demos"
-            className="flex min-w-0 items-center gap-0.5 overflow-x-auto [scrollbar-width:none]"
-          >
-            {SESSIONS.map((s) => {
-              const selected = s.id === sessionId;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={selected}
-                  onClick={() => selectSession(s.id)}
-                  className={cn(
-                    'relative rounded-[5px] px-2.5 py-1.5 font-mono text-[11px] transition-colors sm:text-xs',
-                    selected ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                  )}
-                >
-                  {selected ? (
-                    <motion.span
-                      layoutId="hero-terminal-tab"
-                      className="absolute inset-0 rounded-[5px] bg-muted"
-                      transition={{ type: 'spring', stiffness: 480, damping: 36 }}
-                    />
-                  ) : null}
-                  <span className="relative">{s.label}</span>
-                </button>
-              );
-            })}
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
-              zsh — rhl
-            </span>
-            <button
-              type="button"
-              onClick={replay}
-              aria-label="Replay this demo"
-              className="grid size-7 place-items-center rounded-[5px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      <motion.div style={slabStyle} className="iso-slab isolate rounded-lg will-change-transform">
+        <span aria-hidden="true" className="iso-shadow" />
+        <div className="relative rounded-lg border border-border bg-card">
+          {/* Title bar */}
+          <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2">
+            <div
+              role="tablist"
+              aria-label="CLI demos"
+              className="flex min-w-0 items-center gap-0.5 overflow-x-auto [scrollbar-width:none]"
             >
-              <RotateCcw className="size-3.5" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-
-        {/* Screen. Fixed height: the stream never shifts layout. */}
-        <div
-          role="tabpanel"
-          aria-label={`${session.label} demo`}
-          className="h-[272px] overflow-hidden px-4 py-4 font-mono text-[11.5px] leading-[1.7] sm:h-[280px] sm:px-5 sm:text-[13px]"
-        >
-          {/* Screen readers get the finished transcript, not a character stream. */}
-          <div className="sr-only">
-            {session.steps.map((step) => (
-              <p key={step.command}>
-                {step.command}: {step.output.map((l) => l.text).join(' ')}
-              </p>
-            ))}
-          </div>
-          <div aria-hidden="true">
-            {session.steps.map((step, stepIndex) => {
-              if (stepIndex > frame.step) return null;
-              const active = stepIndex === frame.step;
-              const chars = active ? frame.chars : step.command.length;
-              const lines = active ? frame.lines : step.output.length;
-              const typing = active && lines === 0;
-              return (
-                <div key={step.command} className={stepIndex > 0 ? 'mt-3' : undefined}>
-                  <div className="whitespace-pre-wrap break-words text-foreground">
-                    <span className="mr-2 select-none text-primary">❯</span>
-                    {step.command.slice(0, chars)}
-                    {typing ? (
-                      <span className="ml-px inline-block h-[1.05em] w-[0.55em] translate-y-[0.18em] bg-primary" />
+              {SESSIONS.map((s) => {
+                const selected = s.id === sessionId;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={selected}
+                    onClick={() => selectSession(s.id)}
+                    className={cn(
+                      'relative rounded-[5px] px-2.5 py-1.5 font-mono text-[11px] transition-colors sm:text-xs',
+                      selected ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+                    )}
+                  >
+                    {selected ? (
+                      <motion.span
+                        layoutId="hero-terminal-tab"
+                        className="absolute inset-0 rounded-[5px] bg-muted"
+                        transition={{ type: 'spring', stiffness: 480, damping: 36 }}
+                      />
                     ) : null}
+                    <span className="relative">{s.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
+                zsh — rhl
+              </span>
+              <button
+                type="button"
+                onClick={replay}
+                aria-label="Replay this demo"
+                className="grid size-7 place-items-center rounded-[5px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <RotateCcw className="size-3.5" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          {/* Screen. Fixed height: the stream never shifts layout. */}
+          <div
+            role="tabpanel"
+            aria-label={`${session.label} demo`}
+            className="h-[272px] overflow-hidden px-4 py-4 font-mono text-[11.5px] leading-[1.7] sm:h-[280px] sm:px-5 sm:text-[13px]"
+          >
+            {/* Screen readers get the finished transcript, not a character stream. */}
+            <div className="sr-only">
+              {session.steps.map((step) => (
+                <p key={step.command}>
+                  {step.command}: {step.output.map((l) => l.text).join(' ')}
+                </p>
+              ))}
+            </div>
+            <div aria-hidden="true">
+              {session.steps.map((step, stepIndex) => {
+                if (stepIndex > frame.step) return null;
+                const active = stepIndex === frame.step;
+                const chars = active ? frame.chars : step.command.length;
+                const lines = active ? frame.lines : step.output.length;
+                const typing = active && lines === 0;
+                return (
+                  <div key={step.command} className={stepIndex > 0 ? 'mt-3' : undefined}>
+                    <div className="whitespace-pre-wrap break-words text-foreground">
+                      <span className="mr-2 select-none text-primary">❯</span>
+                      {step.command.slice(0, chars)}
+                      {typing ? (
+                        <span className="ml-px inline-block h-[1.05em] w-[0.55em] translate-y-[0.18em] bg-primary" />
+                      ) : null}
+                    </div>
+                    {step.output.slice(0, lines).map((line) => (
+                      <motion.div
+                        key={line.text}
+                        initial={reduce ? false : { opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.22 }}
+                        className={cn('whitespace-pre-wrap break-words', lineClass(line.kind))}
+                      >
+                        <LinePrefix kind={line.kind} />
+                        {line.text}
+                      </motion.div>
+                    ))}
                   </div>
-                  {step.output.slice(0, lines).map((line) => (
-                    <motion.div
-                      key={line.text}
-                      initial={reduce ? false : { opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.22 }}
-                      className={cn('whitespace-pre-wrap break-words', lineClass(line.kind))}
-                    >
-                      <LinePrefix kind={line.kind} />
-                      {line.text}
-                    </motion.div>
-                  ))}
+                );
+              })}
+              {isDone ? (
+                <div className="mt-3 text-foreground">
+                  <span className="mr-2 select-none text-primary">❯</span>
+                  <span className="inline-block h-[1.05em] w-[0.55em] translate-y-[0.18em] animate-caret bg-primary" />
                 </div>
-              );
-            })}
-            {isDone ? (
-              <div className="mt-3 text-foreground">
-                <span className="mr-2 select-none text-primary">❯</span>
-                <span className="inline-block h-[1.05em] w-[0.55em] translate-y-[0.18em] animate-caret bg-primary" />
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         </div>
       </motion.div>

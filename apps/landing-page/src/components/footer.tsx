@@ -39,6 +39,7 @@ const COLUMNS: FooterColumn[] = [
     links: [
       { label: 'Quickstart Guide', href: '/quickstart' },
       { label: 'About RHL AI', href: '/about' },
+      { label: 'llms.txt (for agents)', href: '/llms.txt', external: true },
       { label: 'GitHub Repository', href: 'https://github.com/imRahul05/rhl-ai', external: true },
       {
         label: 'npm: whatsapp-notifier',

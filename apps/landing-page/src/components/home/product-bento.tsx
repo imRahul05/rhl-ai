@@ -5,29 +5,14 @@ import { Reveal } from '@/components/motion/reveal';
 import { Spotlight } from '@/components/motion/spotlight';
 import type { SkillEntry } from '@/lib/skills';
 import type { TemplateEntry } from '@/lib/repo';
+import { CLI_COMMANDS } from '@/content/cli';
 import { NotifierDemo } from './notifier-demo';
+import { IsoGlyph, type IsoGlyphKind } from '@/components/iso/iso-glyph';
 
 export interface ProductBentoProps {
   skills: readonly SkillEntry[];
   templates: readonly TemplateEntry[];
 }
-
-interface CliCommand {
-  usage: string;
-  does: string;
-}
-
-const CLI_COMMANDS: CliCommand[] = [
-  { usage: 'rhl skill list', does: 'List every skill in the catalog' },
-  { usage: 'rhl skill create <name>', does: 'Scaffold a new skill folder' },
-  { usage: 'rhl skill validate <name>', does: 'Check structure and SKILL.md metadata' },
-  {
-    usage: 'rhl skill install <name> -t ~/.claude/skills',
-    does: 'Install into Claude Code; call it with /<name>',
-  },
-  { usage: 'rhl skill update [name]', does: 'Refresh installed skills' },
-  { usage: 'rhl create <template> <name>', does: 'Start a project from a template' },
-];
 
 interface CellHeaderProps {
   index: string;
@@ -35,9 +20,17 @@ interface CellHeaderProps {
   title: string;
   href: string;
   linkLabel: string;
+  glyph: IsoGlyphKind;
 }
 
-function CellHeader({ index, kicker, title, href, linkLabel }: CellHeaderProps): React.JSX.Element {
+function CellHeader({
+  index,
+  kicker,
+  title,
+  href,
+  linkLabel,
+  glyph,
+}: CellHeaderProps): React.JSX.Element {
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
@@ -48,16 +41,19 @@ function CellHeader({ index, kicker, title, href, linkLabel }: CellHeaderProps):
           {title}
         </h3>
       </div>
-      <Link
-        href={href}
-        aria-label={linkLabel}
-        className="grid size-9 shrink-0 place-items-center rounded-full border border-border text-muted-foreground transition-colors duration-300 after:absolute after:inset-0 after:content-[''] hover:border-primary hover:text-primary"
-      >
-        <ArrowUpRight
-          className="size-4 transition-transform duration-300 group-hover/cell:rotate-45"
-          aria-hidden="true"
-        />
-      </Link>
+      <div className="flex shrink-0 items-start gap-3">
+        <IsoGlyph kind={glyph} />
+        <Link
+          href={href}
+          aria-label={linkLabel}
+          className="grid size-9 shrink-0 place-items-center rounded-full border border-border text-muted-foreground transition-colors duration-300 after:absolute after:inset-0 after:content-[''] hover:border-primary hover:text-primary"
+        >
+          <ArrowUpRight
+            className="size-4 transition-transform duration-300 group-hover/cell:rotate-45"
+            aria-hidden="true"
+          />
+        </Link>
+      </div>
     </div>
   );
 }
@@ -96,6 +92,7 @@ export function ProductBento({ skills, templates }: ProductBentoProps): React.JS
                 title="One binary for the whole loop."
                 href="/products/rhl-cli"
                 linkLabel="RHL CLI details"
+                glyph="cli"
               />
               <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
                 The <code className="font-mono text-foreground">rhl</code> command discovers,
@@ -132,6 +129,7 @@ export function ProductBento({ skills, templates }: ProductBentoProps): React.JS
                 title="Agent Skills"
                 href="/skills"
                 linkLabel="Skills catalog"
+                glyph="skills"
               />
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Behavior packs written in Markdown. Also published to npm as{' '}
@@ -171,6 +169,7 @@ export function ProductBento({ skills, templates }: ProductBentoProps): React.JS
                 title="GitHub, on your phone."
                 href="/products/whatsapp-bot"
                 linkLabel="GitHub WhatsApp notifier details"
+                glyph="notifier"
               />
               <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
                 A scaffolded Express webhook that turns pull request assignments, review requests
@@ -191,6 +190,7 @@ export function ProductBento({ skills, templates }: ProductBentoProps): React.JS
                 title="Start from a known-good base."
                 href="/products/rhl-cli"
                 linkLabel="Project templates in the RHL CLI"
+                glyph="templates"
               />
               <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
                 <code className="font-mono text-foreground">rhl create</code> copies a starter and
