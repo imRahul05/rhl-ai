@@ -24,7 +24,7 @@ export function FinalCta({ skills }: FinalCtaProps): React.JSX.Element {
         <div className="lg:col-span-7">
           <Reveal>
             <p className="label">
-              <span className="text-primary">05</span> — Start
+              <span className="text-primary">06</span> — Start
             </p>
             <h2 id="cta-title" className="display-xl mt-6 max-w-5xl">
               One command to see what is installed.

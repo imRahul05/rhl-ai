@@ -4,6 +4,7 @@ import { CLI_COMMANDS } from '@/content/cli';
 import { DIRECTIVES } from '@/content/directives';
 import { QUICKSTART_STEPS } from '@/content/quickstart';
 import { SITE_PAGES } from '@/content/site';
+import { SHORTLIST, SHORTLIST_FEATURES, SHORTLIST_INSTALL } from '@/content/shortlist';
 import { findRepoRoot, getPackageVersion, getRepoFacts, skillInstallCommand } from './repo';
 import { getAllSkills, getSkillSource } from './skills';
 
@@ -118,6 +119,12 @@ export function buildLlmsTxt(): string {
   }
   out.push('');
 
+  out.push('## Other products', '');
+  out.push(
+    `- [${SHORTLIST.name}](${url('/products/shortlist')}): ${SHORTLIST.summary} Download: ${SHORTLIST.download} · website: ${SHORTLIST.site} · source: ${SHORTLIST.repo} · licence: ${SHORTLIST.license} (source-available, not open source).`,
+  );
+  out.push('');
+
   out.push('## Optional', '');
   out.push(`- [Source code on GitHub](${REPO_URL})`);
   for (const doc of SOURCE_DOCS)
@@ -170,6 +177,22 @@ export function buildLlmsFullTxt(): string {
     out.push(`Enforcement: ${directive.enforcement}`, '');
     out.push('```', directive.codeExample, '```', '');
   }
+
+  out.push(`## ${SHORTLIST.name} (Chrome extension)`, '');
+  out.push(`${SHORTLIST.tagline} ${SHORTLIST.summary}`, '');
+  out.push(
+    `Page: ${url('/products/shortlist')} · website: ${SHORTLIST.site} · source: ${SHORTLIST.repo} · privacy policy: ${SHORTLIST.privacy}`,
+    '',
+  );
+  for (const feature of SHORTLIST_FEATURES) {
+    out.push(
+      `- **${feature.title}** (${feature.ai ? 'optional AI' : 'no AI needed'}): ${feature.body}`,
+    );
+  }
+  out.push('', 'Install:', '');
+  SHORTLIST_INSTALL.forEach((step, index) => out.push(`${index + 1}. ${step}`));
+  out.push('', `Download: ${SHORTLIST.download}`, '');
+  out.push(`Licence: ${SHORTLIST.license}. ${SHORTLIST.licenseNote}`, '');
 
   out.push('## Agent skills', '');
   for (const skill of skills) {

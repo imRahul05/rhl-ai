@@ -376,6 +376,22 @@ h3 {
   stroke: hsl(var(--foreground) / 0.28);
   stroke-dasharray: 3 3;
 }
+/* Match chips: a skill the resume has (hit) or lacks (miss). */
+.iso-hit polygon {
+  fill: color-mix(in oklab, hsl(var(--card)), hsl(var(--success)) 18%);
+  stroke: hsl(var(--success) / 0.7);
+}
+.iso-miss polygon {
+  fill: color-mix(in oklab, hsl(var(--card)), hsl(var(--destructive)) 14%);
+  stroke: hsl(var(--destructive) / 0.7);
+  stroke-dasharray: 3 2;
+}
+.iso-hit .iso-label {
+  fill: hsl(var(--success));
+}
+.iso-miss .iso-label {
+  fill: hsl(var(--destructive));
+}
 /* Text drawn onto a face. */
 .iso-label {
   font-family: var(--font-mono);

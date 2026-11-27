@@ -11,7 +11,7 @@ export const SITE_PAGES: SitePage[] = [
     path: '/',
     title: 'Home',
     summary:
-      'What RHL AI is: SKILL.md agent skills, the `rhl` CLI that installs them, project templates and a GitHub → WhatsApp notifier.',
+      'What RHL AI is: SKILL.md agent skills, the `rhl` CLI that installs them, project templates, a GitHub → WhatsApp notifier and the Shortlist Chrome extension.',
   },
   {
     path: '/quickstart',
@@ -47,6 +47,12 @@ export const SITE_PAGES: SitePage[] = [
     title: 'GitHub WhatsApp bot',
     summary:
       'An Express webhook that turns GitHub pull request and CI events into WhatsApp messages via Twilio.',
+  },
+  {
+    path: '/products/shortlist',
+    title: 'Shortlist',
+    summary:
+      'A free Chrome extension that scores your resume against any job page, tailors it in one click and autofills applications, entirely in the browser. Source-available (PolyForm Strict), in its own repo.',
   },
   {
     path: '/directives',
