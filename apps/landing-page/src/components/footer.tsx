@@ -20,6 +20,7 @@ const COLUMNS: FooterColumn[] = [
       { label: 'RHL CLI', href: '/products/rhl-cli' },
       { label: 'Skills System', href: '/products/skills' },
       { label: 'WhatsApp Bot', href: '/products/whatsapp-bot' },
+      { label: 'Shortlist', href: '/products/shortlist' },
       { label: 'All products', href: '/products' },
     ],
   },

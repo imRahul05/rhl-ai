@@ -5,6 +5,7 @@ import { Pipeline } from '@/components/home/pipeline';
 import { ProductBento } from '@/components/home/product-bento';
 import { CommandMarquee } from '@/components/home/command-marquee';
 import { Principles } from '@/components/home/principles';
+import { ShortlistSpotlight } from '@/components/home/shortlist-spotlight';
 import { FinalCta } from '@/components/home/final-cta';
 import { getAllSkills } from '@/lib/skills';
 import { getRepoFacts } from '@/lib/repo';
@@ -51,6 +52,7 @@ export default function HomePage(): React.JSX.Element {
       <SkillAnatomy />
       <Pipeline />
       <ProductBento skills={skills} templates={repo.templates} />
+      <ShortlistSpotlight />
       <CommandMarquee commands={MARQUEE_COMMANDS} tags={tags} />
       <Principles />
       <FinalCta skills={skills.map((s) => s.slug)} />

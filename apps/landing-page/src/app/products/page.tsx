@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Reveal } from '@/components/motion/reveal';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { getPackageVersion } from '@/lib/repo';
+import { SHORTLIST } from '@/content/shortlist';
 
 /** Shown as `v<version>` from the package's own package.json at build time. */
 const v = (dir: string): string => {
@@ -22,6 +23,8 @@ interface ProductItem {
   headline: string;
   description: string;
   installCommand: string;
+  /** Set when the install step is a download, not a shell command. */
+  installLabel?: string;
   href: string;
   features: string[];
 }
@@ -85,6 +88,25 @@ const PRODUCTS: ProductItem[] = [
     ],
   },
   {
+    id: 'shortlist',
+    name: SHORTLIST.name,
+    packageScope: 'github.com/imRahul05/shortliistt',
+    category: 'CHROME EXTENSION',
+    version: 'Free',
+    status: 'Source-available',
+    headline: 'Know your fit before you apply: job match and resume tailoring in Chrome.',
+    description: SHORTLIST.summary,
+    installCommand: SHORTLIST.download,
+    installLabel: 'Download shortlist-extension.zip → chrome://extensions → Load unpacked',
+    href: '/products/shortlist',
+    features: [
+      'Deterministic match score from the job page: must-haves, years, degree, keywords',
+      'Resume Studio with one-click tailoring, PDF / DOCX export and undo',
+      'Autofill for application forms and an application tracker with reminders',
+      'Optional on-device AI (Chrome’s Gemini Nano); no account, no API keys, no servers',
+    ],
+  },
+  {
     id: 'scaffold',
     name: 'Scaffolding Engine',
     packageScope: '@rhl-ai/scaffold',
@@ -144,7 +166,8 @@ export default function ProductsPage(): React.JSX.Element {
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
               Developer tools, behavioral intelligence, and automations built to work together in
-              modern AI-assisted engineering workflows.
+              modern AI-assisted engineering workflows — plus Shortlist, a free job-match extension
+              for Chrome.
             </p>
           </div>
         </section>
@@ -216,10 +239,20 @@ export default function ProductsPage(): React.JSX.Element {
                     {/* Quick Command */}
                     <div className="pt-2">
                       <div className="rounded-md border border-border bg-card p-3 font-mono text-xs flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          <span className="text-primary mr-2">$</span>
-                          {product.installCommand}
-                        </span>
+                        {product.installLabel ? (
+                          <a
+                            href={product.installCommand}
+                            className="text-muted-foreground hover:text-foreground"
+                          >
+                            <span className="text-primary mr-2">↓</span>
+                            {product.installLabel}
+                          </a>
+                        ) : (
+                          <span className="text-muted-foreground">
+                            <span className="text-primary mr-2">$</span>
+                            {product.installCommand}
+                          </span>
+                        )}
                         <span className="text-[11px] text-muted-foreground uppercase">
                           {product.status}
                         </span>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { boxFaces, type IsoProjector } from '@/lib/iso';
 import { cn } from '@/lib/utils';
 
-export type IsoTone = 'paper' | 'signal' | 'ink' | 'ghost';
+export type IsoTone = 'paper' | 'signal' | 'ink' | 'ghost' | 'hit' | 'miss';
 
 export interface IsoBoxProps {
   iso: IsoProjector;

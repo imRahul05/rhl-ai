@@ -41,7 +41,7 @@ export function Principles(): React.JSX.Element {
         <Reveal className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
             <p className="label">
-              <span className="text-primary">04</span> — Ground rules
+              <span className="text-primary">05</span> — Ground rules
             </p>
             <h2 id="principles-title" className="display-lg mt-5">
               Built the way it tells agents to build.
