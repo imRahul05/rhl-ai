@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { MotionProvider } from '@/components/motion/motion-provider';
 import { ScrollProgress } from '@/components/motion/scroll-progress';
 import { Header } from '@/components/header';
+import { DynamicFavicon } from '@/components/dynamic-favicon';
 import { getPackageVersion } from '@/lib/repo';
 import { Footer } from '@/components/footer';
 
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: RootLayoutProps): React.JSX.Ele
         <ThemeProvider defaultTheme="dark">
           <MotionProvider>
             <SmoothScrollProvider>
+              <DynamicFavicon />
               <ScrollProgress />
               <Header version={getPackageVersion('packages/cli')} />
               {children}

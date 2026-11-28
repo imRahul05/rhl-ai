@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,8 @@ interface ProductItem {
   installCommand: string;
   /** Set when the install step is a download, not a shell command. */
   installLabel?: string;
+  /** Optional product brand icon shown beside the title. */
+  logo?: string;
   href: string;
   features: string[];
 }
@@ -110,6 +113,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'vela',
     name: VELA.name,
+    logo: VELA.logo,
     packageScope: 'macOS 26+ · Native Swift 6 (~1.5 MB DMG)',
     category: 'MACOS NOTCH COMPANION',
     version: 'Latest',
@@ -120,10 +124,10 @@ const PRODUCTS: ProductItem[] = [
     installLabel: 'Download Vela.dmg → Drag to Applications → Press ⌃⌥Space',
     href: '/products/vela',
     features: [
-      'Auto-connects Claude Code, Antigravity, Codex & custom JSON adapters with live bot doodle',
-      'Multi-browser launcher (Chrome, Brave, DuckDuckGo, Safari) & on-device Apple Intelligence',
-      'Opt-in plugins: Smart Clipboard (Vision OCR), Storage Heatmap Cleaner, and 5G Phone Companion',
-      '0% idle CPU, multi-monitor switcher, and AES-256-GCM encrypted $0 cloud sync',
+      'Auto-connects Claude Code, Antigravity & Codex CLI with 1-click Notch & Phone approvals',
+      'On-device Meeting Transcriber (Zoom/Meet/Teams, works with AirPods) → Apple Notes',
+      'Opt-in plugins: Persistent Smart Clipboard (OCR), Dev Ports, GitHub PR/CI Badges & Cleaner',
+      'Two-finger swipe & keyboard navigation, Hide Notch toggle, 0% idle CPU & AES-256 sync',
     ],
   },
   {
@@ -212,9 +216,20 @@ export default function ProductsPage(): React.JSX.Element {
                       </Badge>
                     </div>
 
-                    <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                      {product.name}
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      {product.logo ? (
+                        <Image
+                          src={product.logo}
+                          alt={`${product.name} logo`}
+                          width={36}
+                          height={36}
+                          className="size-9 rounded-xl ring-1 ring-border"
+                        />
+                      ) : null}
+                      <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                        {product.name}
+                      </h2>
+                    </div>
 
                     <div className="font-mono text-xs text-muted-foreground bg-muted/50 px-2.5 py-1 rounded inline-block">
                       {product.packageScope}

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowUpRight,
@@ -17,20 +18,24 @@ import { VELA, VELA_FEATURES, VELA_INSTALL, VELA_PLUGINS } from '@/content/vela'
 export const metadata: Metadata = {
   title: 'Vela — native macOS notch companion & plugin hub · RHL AI',
   description: VELA.summary,
+  icons: {
+    icon: '/products/vela/logo.png',
+    apple: '/products/vela/logo.png',
+  },
 };
 
 const FACTS: { value: string; label: string }[] = [
   { value: '~1.5 MB', label: 'native Swift 6 DMG download' },
   { value: '0%', label: 'idle CPU & zero Electron bloat' },
-  { value: '3', label: 'opt-in plugins (install or remove)' },
-  { value: '100%', label: 'local-first & AES-256 encrypted' },
+  { value: '7', label: 'opt-in plugins (install or remove)' },
+  { value: '100%', label: 'on-device AI & AES-256 encrypted' },
 ];
 
 const PRIVACY: string[] = [
   'The local event server binds strictly to 127.0.0.1:7878—no external traffic unless you explicitly enable 5G Phone Companion.',
-  'Smart Clipboard automatically ignores 1Password, Bitwarden, Keychain Access and concealed pasteboard types so passwords are never stored.',
+  'Meeting Transcriber captures Mic + System Audio locally via Apple Speech & FoundationModels, saving directly to Apple Notes with zero cloud audio upload.',
+  'Smart Clipboard persists your snippets locally across updates while automatically ignoring 1Password, Bitwarden, Keychain Access and concealed pasteboard types.',
   'Mac & Dev Cleaner never hard-deletes anything: every cleaned file moves safely to macOS Trash and remains 100% recoverable.',
-  '5G Vercel Cloud Sync encrypts payloads locally with Apple CryptoKit (AES-256-GCM); the decryption key lives only in your phone’s URL #fragment.',
 ];
 
 function ExternalLink({
@@ -80,7 +85,17 @@ export default function VelaPage(): React.JSX.Element {
               <ChevronRight className="size-3.5" aria-hidden="true" />
               <span className="text-foreground">Vela</span>
             </nav>
-            <p className="label">macOS notch app · native Swift 6 · opt-in plugins</p>
+            <div className="flex items-center gap-3.5">
+              <Image
+                src={VELA.logo}
+                alt="Vela macOS app icon"
+                width={52}
+                height={52}
+                priority
+                className="size-13 rounded-2xl shadow-lg shadow-sky-500/10 ring-1 ring-white/10"
+              />
+              <p className="label">macOS notch app · native Swift 6 · opt-in plugins</p>
+            </div>
             <h1 className="display-lg mt-4">
               {VELA.name}. <span className="text-muted-foreground">{VELA.tagline}</span>
             </h1>
@@ -100,8 +115,8 @@ export default function VelaPage(): React.JSX.Element {
               <ExternalLink href={VELA.repo}>Source on GitHub</ExternalLink>
             </div>
             <p className="mt-5 font-mono text-[11px] text-muted-foreground">
-              {VELA.platform} · Global shortcut {VELA.shortcut} · Auto-hooks Claude Code &amp;
-              Antigravity.
+              {VELA.platform} · Global shortcut {VELA.shortcut} · Auto-hooks Claude Code,
+              Antigravity &amp; Codex CLI.
             </p>
           </div>
           <div className="flex justify-center lg:col-span-5 lg:justify-end">
