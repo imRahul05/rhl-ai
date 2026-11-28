@@ -55,6 +55,12 @@ export const SITE_PAGES: SitePage[] = [
       'A free Chrome extension that scores your resume against any job page, tailors it in one click and autofills applications, entirely in the browser. Source-available (PolyForm Strict), in its own repo.',
   },
   {
+    path: '/products/vela',
+    title: 'Vela',
+    summary:
+      'A ~1.5 MB native Swift 6 macOS notch companion for Claude Code, Antigravity and Codex alerts, multi-browser launching, on-device Apple Intelligence, and opt-in plugins (Smart Clipboard, Storage Heatmap Cleaner, E2E encrypted Phone Companion).',
+  },
+  {
     path: '/directives',
     title: 'Directives',
     summary:

@@ -6,6 +6,7 @@ import { Reveal } from '@/components/motion/reveal';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { getPackageVersion } from '@/lib/repo';
 import { SHORTLIST } from '@/content/shortlist';
+import { VELA } from '@/content/vela';
 
 /** Shown as `v<version>` from the package's own package.json at build time. */
 const v = (dir: string): string => {
@@ -107,6 +108,25 @@ const PRODUCTS: ProductItem[] = [
     ],
   },
   {
+    id: 'vela',
+    name: VELA.name,
+    packageScope: 'macOS 26+ · Native Swift 6 (~1.5 MB DMG)',
+    category: 'MACOS NOTCH COMPANION',
+    version: 'Latest',
+    status: 'Free DMG',
+    headline: 'Your MacBook notch, upgraded for AI coding agents and opt-in Mac utilities.',
+    description: VELA.summary,
+    installCommand: VELA.download,
+    installLabel: 'Download Vela.dmg → Drag to Applications → Press ⌃⌥Space',
+    href: '/products/vela',
+    features: [
+      'Auto-connects Claude Code, Antigravity, Codex & custom JSON adapters with live bot doodle',
+      'Multi-browser launcher (Chrome, Brave, DuckDuckGo, Safari) & on-device Apple Intelligence',
+      'Opt-in plugins: Smart Clipboard (Vision OCR), Storage Heatmap Cleaner, and 5G Phone Companion',
+      '0% idle CPU, multi-monitor switcher, and AES-256-GCM encrypted $0 cloud sync',
+    ],
+  },
+  {
     id: 'scaffold',
     name: 'Scaffolding Engine',
     packageScope: '@rhl-ai/scaffold',
@@ -166,8 +186,8 @@ export default function ProductsPage(): React.JSX.Element {
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
               Developer tools, behavioral intelligence, and automations built to work together in
-              modern AI-assisted engineering workflows — plus Shortlist, a free job-match extension
-              for Chrome.
+              modern AI-assisted engineering workflows — plus Shortlist for Chrome and Vela for
+              macOS.
             </p>
           </div>
         </section>

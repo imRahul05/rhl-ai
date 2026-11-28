@@ -21,6 +21,7 @@ const COLUMNS: FooterColumn[] = [
       { label: 'Skills System', href: '/products/skills' },
       { label: 'WhatsApp Bot', href: '/products/whatsapp-bot' },
       { label: 'Shortlist', href: '/products/shortlist' },
+      { label: 'Vela', href: '/products/vela' },
       { label: 'All products', href: '/products' },
     ],
   },
