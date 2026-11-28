@@ -3,6 +3,7 @@ import { DIRECTIVES } from '@/content/directives';
 import { QUICKSTART_STEPS } from '@/content/quickstart';
 import { SITE_PAGES } from '@/content/site';
 import { SHORTLIST, SHORTLIST_FEATURES, SHORTLIST_INSTALL } from '@/content/shortlist';
+import { VELA, VELA_FEATURES, VELA_INSTALL, VELA_PLUGINS } from '@/content/vela';
 import { getPackageVersion, getRepoFacts, skillInstallCommand } from './repo';
 import { REPO_CONTENT } from './repo-content';
 import { getAllSkills, getSkillSource } from './skills';
@@ -118,6 +119,9 @@ export function buildLlmsTxt(): string {
   out.push(
     `- [${SHORTLIST.name}](${url('/products/shortlist')}): ${SHORTLIST.summary} Download: ${SHORTLIST.download} · website: ${SHORTLIST.site} · source: ${SHORTLIST.repo} · licence: ${SHORTLIST.license} (source-available, not open source).`,
   );
+  out.push(
+    `- [${VELA.name}](${url('/products/vela')}): ${VELA.summary} Platform: ${VELA.platform} · download: ${VELA.download}.`,
+  );
   out.push('');
 
   out.push('## Optional', '');
@@ -188,6 +192,22 @@ export function buildLlmsFullTxt(): string {
   SHORTLIST_INSTALL.forEach((step, index) => out.push(`${index + 1}. ${step}`));
   out.push('', `Download: ${SHORTLIST.download}`, '');
   out.push(`Licence: ${SHORTLIST.license}. ${SHORTLIST.licenseNote}`, '');
+
+  out.push(`## ${VELA.name} (macOS notch companion)`, '');
+  out.push(`${VELA.tagline} ${VELA.summary}`, '');
+  out.push(`Page: ${url('/products/vela')} · platform: ${VELA.platform}`, '');
+  for (const feature of VELA_FEATURES) {
+    out.push(
+      `- **${feature.title}** (${feature.ai ? 'optional AI' : 'native Swift'}): ${feature.body}`,
+    );
+  }
+  out.push('', 'Opt-in plugins:', '');
+  for (const plugin of VELA_PLUGINS) {
+    out.push(`- **${plugin.name}**: ${plugin.summary}`);
+  }
+  out.push('', 'Install:', '');
+  VELA_INSTALL.forEach((step, index) => out.push(`${index + 1}. ${step}`));
+  out.push('', `Download: ${VELA.download}`, '');
 
   out.push('## Agent skills', '');
   for (const skill of skills) {
