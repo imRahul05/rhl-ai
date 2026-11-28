@@ -174,11 +174,11 @@ export function IsoVela(): React.JSX.Element {
             </text>
             <text
               className="iso-label"
-              fontSize={7.8}
-              letterSpacing={1.2}
+              fontSize={7.2}
+              letterSpacing={1.0}
               transform={topFaceTransform(iso, 1.08, 2.22, notchZ + 0.28)}
             >
-              1.5 MB · SWIFT 6 NOTCH
+              1.5 MB · SWIFT 6
             </text>
           </IsoBox>
           {/* Glowing bot accent block on the left wing of the notch */}
