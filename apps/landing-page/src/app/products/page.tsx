@@ -112,7 +112,7 @@ const PRODUCTS: ProductItem[] = [
     name: VELA.name,
     packageScope: 'macOS 26+ · Native Swift 6 (~1.5 MB DMG)',
     category: 'MACOS NOTCH COMPANION',
-    version: 'v1.0.0',
+    version: 'Latest',
     status: 'Free DMG',
     headline: 'Your MacBook notch, upgraded for AI coding agents and opt-in Mac utilities.',
     description: VELA.summary,
