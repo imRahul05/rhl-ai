@@ -1,6 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import YAML from 'yaml';
+import { REPO_CONTENT, type RawSkillSnapshot } from './repo-content';
 
 export interface SkillMetadata {
   readonly name: string;
@@ -61,25 +60,6 @@ export interface SkillEntry {
   readonly version?: string;
 }
 
-/**
- * Locates the repo-level `skills/` directory. The app runs with
- * cwd=apps/landing-page, but we walk upwards so it also works from the repo root.
- */
-function resolveSkillsRoot(): string {
-  let dir = process.cwd();
-  for (let i = 0; i < 5; i += 1) {
-    const candidate = path.join(dir, 'skills');
-    const hasSkills =
-      fs.existsSync(candidate) &&
-      fs
-        .readdirSync(candidate, { withFileTypes: true })
-        .some((e) => e.isDirectory() && fs.existsSync(path.join(candidate, e.name, 'SKILL.md')));
-    if (hasSkills) return candidate;
-    dir = path.dirname(dir);
-  }
-  throw new Error(`Could not locate the repo-level skills/ directory from ${process.cwd()}`);
-}
-
 const ACRONYMS = new Set(['pr', 'ai', 'api', 'cli', 'ui', 'ci']);
 
 function toTitle(slug: string): string {
@@ -94,20 +74,13 @@ function firstSentence(text: string): string {
   return match?.[1] ?? text;
 }
 
-function readSkill(root: string, slug: string): SkillEntry {
-  const raw = fs.readFileSync(path.join(root, slug, 'SKILL.md'), 'utf8');
-  const { metadata, instructions } = parseSkillMarkdown(raw);
-  let pkg: { name?: unknown; version?: unknown } = {};
-  try {
-    pkg = JSON.parse(fs.readFileSync(path.join(root, slug, 'package.json'), 'utf8')) as typeof pkg;
-  } catch {
-    // Skill without a package.json: not published to npm.
-  }
+function toSkillEntry(snapshot: RawSkillSnapshot): SkillEntry {
+  const { metadata, instructions } = parseSkillMarkdown(snapshot.raw);
   return {
-    npmName: typeof pkg.name === 'string' ? pkg.name : undefined,
-    version: typeof pkg.version === 'string' ? pkg.version : metadata.version,
-    slug,
-    title: toTitle(slug),
+    npmName: snapshot.npmName ?? undefined,
+    version: snapshot.packageVersion ?? metadata.version,
+    slug: snapshot.slug,
+    title: toTitle(snapshot.slug),
     metadata,
     summary: firstSentence(metadata.description),
     body: instructions.replace(/^#\s+.*\r?\n+/, ''),
@@ -115,20 +88,15 @@ function readSkill(root: string, slug: string): SkillEntry {
 }
 
 export function getAllSkills(): SkillEntry[] {
-  const root = resolveSkillsRoot();
-  return fs
-    .readdirSync(root, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && fs.existsSync(path.join(root, e.name, 'SKILL.md')))
-    .map((e) => readSkill(root, e.name))
-    .sort((a, b) => a.slug.localeCompare(b.slug));
+  return REPO_CONTENT.skills.map(toSkillEntry);
 }
 
 export function getSkill(slug: string): SkillEntry | undefined {
-  return getAllSkills().find((s) => s.slug === slug);
+  const snapshot = REPO_CONTENT.skills.find((s) => s.slug === slug);
+  return snapshot ? toSkillEntry(snapshot) : undefined;
 }
 
 /** Raw SKILL.md text for a skill, or an empty string when it does not exist. */
 export function getSkillSource(slug: string): string {
-  const file = path.join(resolveSkillsRoot(), slug, 'SKILL.md');
-  return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+  return REPO_CONTENT.skills.find((s) => s.slug === slug)?.raw ?? '';
 }

@@ -8,6 +8,9 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: path.join(__dirname, '../../'),
+  // Set STANDALONE=1 to build a self-contained server (only traced files),
+  // which reproduces the Vercel function filesystem locally.
+  output: process.env.STANDALONE ? 'standalone' : undefined,
   async redirects() {
     return [
       {
