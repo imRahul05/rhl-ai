@@ -8,8 +8,8 @@ export const VELA = {
   tagline: 'Your MacBook notch, upgraded for AI workflows.',
   summary:
     'A ~1.5 MB native Swift 6 notch companion for macOS. Auto-connects to Claude Code, Antigravity, Codex and custom adapters, launches any installed browser, runs on-device Apple Intelligence, and expands with opt-in plugins you can install or remove in one click.',
-  repo: 'https://github.com/imRahul05/rhl-ai',
-  download: 'https://github.com/imRahul05/rhl-ai/releases',
+  repo: 'https://github.com/imRahul05/vela',
+  download: 'https://github.com/imRahul05/vela/releases/latest/download/Vela.dmg',
   platform: 'macOS 26+ · Apple Silicon · Native Swift 6 & SwiftUI',
   shortcut: '⌃⌥Space',
 } as const;
