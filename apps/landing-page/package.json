@@ -3,10 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync-content": "node scripts/sync-repo-content.mjs",
+    "predev": "node scripts/sync-repo-content.mjs",
     "dev": "next dev --port 3000",
+    "prebuild": "node scripts/sync-repo-content.mjs",
     "build": "next build && node scripts/check-trace.mjs",
     "start": "next start",
+    "prelint": "node scripts/sync-repo-content.mjs",
     "lint": "eslint src",
+    "pretypecheck": "node scripts/sync-repo-content.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

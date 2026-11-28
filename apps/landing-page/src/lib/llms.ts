@@ -1,11 +1,10 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { CLI_COMMANDS } from '@/content/cli';
 import { DIRECTIVES } from '@/content/directives';
 import { QUICKSTART_STEPS } from '@/content/quickstart';
 import { SITE_PAGES } from '@/content/site';
 import { SHORTLIST, SHORTLIST_FEATURES, SHORTLIST_INSTALL } from '@/content/shortlist';
-import { findRepoRoot, getPackageVersion, getRepoFacts, skillInstallCommand } from './repo';
+import { getPackageVersion, getRepoFacts, skillInstallCommand } from './repo';
+import { REPO_CONTENT } from './repo-content';
 import { getAllSkills, getSkillSource } from './skills';
 
 /**
@@ -43,11 +42,7 @@ const SOURCE_DOCS: { file: string; title: string }[] = [
 ];
 
 function readRepoFile(relative: string): string | undefined {
-  try {
-    return fs.readFileSync(path.join(findRepoRoot(), relative), 'utf8').trim();
-  } catch {
-    return undefined;
-  }
+  return REPO_CONTENT.docs[relative];
 }
 
 /** Pushes every heading in embedded Markdown down `by` levels so it nests under ours. */
